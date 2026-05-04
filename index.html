@@ -6,7 +6,7 @@
 <title>New Client Intake | RAMOT Consulting Group</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--navy:#1a2744;--copper:#b07d4a;--copper-light:#d4a96a;--cream:#f8f4ee;--cream-dark:#ede8e0;--text-main:#1a2744;--text-muted:#6b7280;--border:rgba(176,125,74,0.25)}
+  :root{--navy:#1a2744;--copper:#b07d4a;--copper-light:#d4a96a;--cream:#f8f4ee;--text-main:#1a2744;--text-muted:#6b7280;--border:rgba(176,125,74,0.25)}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Jost',sans-serif;background:var(--cream);min-height:100vh}
   .fh{background:var(--navy);padding:20px 40px;display:flex;align-items:center;gap:14px}
@@ -52,278 +52,537 @@
   .btn-submit{padding:10px 30px;border:none;border-radius:4px;background:var(--copper);font-family:'Jost',sans-serif;font-size:13px;color:#fff;cursor:pointer;letter-spacing:0.04em;transition:background 0.2s}
   .btn-submit:hover{background:#9a6d3e}
   .btn-submit:disabled{background:#ccc;cursor:not-allowed}
+  .err{display:none;background:#fff0f0;border:1px solid #ffcccc;color:#c00;padding:10px 14px;border-radius:4px;font-size:13px;margin-top:12px}
+
+  /* ROUTE SELECTOR */
+  #route-screen{padding:48px 40px;max-width:680px;margin:0 auto}
+  #route-screen .sh{text-align:center;margin-bottom:10px}
+  #route-screen .sd{text-align:center;margin-bottom:40px}
+  .route-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .route-card{background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:36px 28px;cursor:pointer;transition:all 0.25s;text-align:center}
+  .route-card:hover{border-color:var(--copper);box-shadow:0 4px 20px rgba(176,125,74,0.12);transform:translateY(-2px)}
+  .route-icon{font-size:32px;margin-bottom:16px}
+  .route-card h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--navy);margin-bottom:8px}
+  .route-card p{font-size:13px;color:var(--text-muted);line-height:1.7;font-weight:300}
+  .route-card .route-cta{display:inline-block;margin-top:20px;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--copper);font-weight:500}
+
+  /* SUCCESS */
   .success{display:none;padding:60px 40px;text-align:center;max-width:520px;margin:0 auto}
   .success.active{display:block}
   .success h2{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--navy);margin-bottom:14px}
   .success p{font-size:15px;color:var(--text-muted);font-weight:300;line-height:1.8}
   .check-circle{width:64px;height:64px;border-radius:50%;background:rgba(176,125,74,0.1);border:2px solid var(--copper);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:26px;color:var(--copper)}
-  .err{display:none;background:#fff0f0;border:1px solid #ffcccc;color:#c00;padding:10px 14px;border-radius:4px;font-size:13px;margin-top:12px}
-  @media(max-width:600px){.gr2,.gr3{grid-template-columns:1fr}.cbs{grid-template-columns:1fr}.wrap{padding:24px 20px}.fh,.pbw{padding-left:20px;padding-right:20px}}
+
+  @media(max-width:600px){.gr2,.gr3{grid-template-columns:1fr}.cbs{grid-template-columns:1fr}.wrap,.route-cards{padding:24px 20px}.fh,.pbw{padding-left:20px;padding-right:20px}.route-cards{grid-template-columns:1fr}#route-screen{padding:32px 20px}}
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="fh">
-  <div class="lm"><div class="dr"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div class="dr"><div class="dot"></div><div class="dot"></div></div><div class="dia"></div></div>
-  <div class="ht"><h1>RAMOT Consulting Group</h1><p>New Client Intake</p></div>
+  <!-- Dot mark: diamond, 2 dots, 3 dots -->
+  <svg width="32" height="38" viewBox="0 0 32 38" xmlns="http://www.w3.org/2000/svg">
+    <!-- Diamond top -->
+    <rect x="12" y="1" width="8" height="8" rx="1" fill="#b07d4a" transform="rotate(45 16 5)"/>
+    <!-- Row 2: 2 dots -->
+    <circle cx="10" cy="18" r="3.5" fill="#FAF7F3"/>
+    <circle cx="22" cy="18" r="3.5" fill="#FAF7F3"/>
+    <!-- Row 3: 3 dots -->
+    <circle cx="4" cy="30" r="3.5" fill="#FAF7F3"/>
+    <circle cx="16" cy="30" r="3.5" fill="#FAF7F3"/>
+    <circle cx="28" cy="30" r="3.5" fill="#FAF7F3"/>
+  </svg>
+  <!-- Wordmark -->
+  <div style="display:flex;flex-direction:column;gap:3px;margin-left:10px">
+    <svg width="180" height="22" viewBox="0 0 900 110" xmlns="http://www.w3.org/2000/svg">
+      <text x="450" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="78" fill="#FAF7F3" letter-spacing="2">R<tspan fill="#b07d4a">.</tspan>A<tspan fill="#b07d4a">.</tspan>M<tspan fill="#b07d4a">.</tspan>O<tspan fill="#b07d4a">.</tspan>T<tspan fill="#b07d4a">.</tspan></text>
+    </svg>
+    <svg width="180" height="14" viewBox="0 0 900 50" xmlns="http://www.w3.org/2000/svg">
+      <text x="450" y="36" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#85B7EB" letter-spacing="7">CONSULTING GROUP</text>
+    </svg>
+  </div>
+  <div style="width:1px;height:32px;background:rgba(255,255,255,0.15);margin:0 20px"></div>
+  <p id="header-sub" style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;font-weight:300;font-family:'Jost',sans-serif">New Client Intake</p>
 </div>
-<div class="pbw">
-  <div class="sis" id="sis">
-    <div class="si active"><div class="sc active">1</div><div class="sl">Contact</div></div>
-    <div class="sline"></div>
-    <div class="si"><div class="sc">2</div><div class="sl">Business</div></div>
-    <div class="sline"></div>
-    <div class="si"><div class="sc">3</div><div class="sl">Services</div></div>
-    <div class="sline"></div>
-    <div class="si"><div class="sc">4</div><div class="sl">Financials</div></div>
-    <div class="sline"></div>
-    <div class="si"><div class="sc">5</div><div class="sl">Goals</div></div>
+
+<!-- PROGRESS BAR (hidden on route screen) -->
+<div class="pbw" id="progress-bar" style="display:none">
+  <div class="sis" id="sis"></div>
+</div>
+
+<!-- ROUTE SELECTOR -->
+<div id="route-screen">
+  <div class="sh" style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--navy);margin-bottom:6px">How can we help?</div>
+  <div class="sd">Select the option that best describes what you're looking for.</div>
+  <div class="route-cards">
+    <div class="route-card" onclick="startPath('personal')">
+      <div class="route-icon">🧾</div>
+      <h3>Personal Tax Return</h3>
+      <p>Individual or family tax preparation. We'll gather the details needed to prepare an accurate return and quote.</p>
+      <div class="route-cta">Get started →</div>
+    </div>
+    <div class="route-card" onclick="startPath('business')">
+      <div class="route-icon">🏢</div>
+      <h3>Business Services</h3>
+      <p>Bookkeeping, fractional CFO, transaction advisory, or other financial services for your business.</p>
+      <div class="route-cta">Get started →</div>
+    </div>
   </div>
 </div>
 
-<div class="wrap">
+<!-- ===================== PERSONAL TAX FORM ===================== -->
+<div id="personal-form" style="display:none">
+  <div class="wrap">
 
-  <!-- Step 1: Contact -->
-  <div class="sp active" id="step0">
-    <div class="sh">Contact Information</div>
-    <div class="sd">Tell us who we'll be working with.</div>
-    <div class="gr2"><div class="fg"><label>First Name</label><input type="text" id="firstName" placeholder="Jane"></div><div class="fg"><label>Last Name</label><input type="text" id="lastName" placeholder="Smith"></div></div>
-    <div class="gr2"><div class="fg"><label>Title</label><input type="text" id="title" placeholder="CEO"></div><div class="fg"><label>Company</label><input type="text" id="company" placeholder="Acme Inc."></div></div>
-    <div class="gr2"><div class="fg"><label>Email</label><input type="email" id="email" placeholder="jane@acme.com"></div><div class="fg"><label>Phone</label><input type="tel" id="phone" placeholder="(312) 555-0100"></div></div>
-    <div class="gr2">
-      <div class="fg"><label>Preferred Contact</label><select id="preferredContact"><option>Email</option><option>Phone</option><option>Text</option></select></div>
-      <div class="fg"><label>How did you hear about us?</label><select id="referralSource"><option value="">-- Select --</option><option>Referral</option><option>LinkedIn</option><option>Google Search</option><option>Other</option></select></div>
+    <!-- Step 1: Contact -->
+    <div class="sp active" id="p-step0">
+      <div class="sh">Contact Information</div>
+      <div class="sd">Tell us a little about yourself.</div>
+      <div class="gr2"><div class="fg"><label>First Name</label><input type="text" id="p-firstName" placeholder="Jane"></div><div class="fg"><label>Last Name</label><input type="text" id="p-lastName" placeholder="Smith"></div></div>
+      <div class="gr2"><div class="fg"><label>Email</label><input type="email" id="p-email" placeholder="jane@email.com"></div><div class="fg"><label>Phone</label><input type="tel" id="p-phone" placeholder="(312) 555-0100"></div></div>
+      <div class="gr2">
+        <div class="fg"><label>Preferred Contact</label><select id="p-preferredContact"><option>Email</option><option>Phone</option><option>Text</option></select></div>
+        <div class="fg"><label>How did you hear about us?</label><select id="p-referralSource"><option value="">-- Select --</option><option>Referral</option><option>LinkedIn</option><option>Google Search</option><option>Other</option></select></div>
+      </div>
+      <div class="nav"><button class="btn-back" onclick="backToRoute()">← Back</button><button class="btn-next" onclick="pGo(1)">Next →</button></div>
     </div>
-    <div class="nav"><div></div><button class="btn-next" onclick="go(1)">Next →</button></div>
+
+    <!-- Step 2: Tax Situation -->
+    <div class="sp" id="p-step1">
+      <div class="sh">Your Tax Situation</div>
+      <div class="sd">This helps us understand the scope and prepare an accurate quote.</div>
+      <div class="gr2">
+        <div class="fg"><label>Filing Status</label>
+          <select id="p-filingStatus">
+            <option value="">-- Select --</option>
+            <option>Single</option>
+            <option>Married Filing Jointly</option>
+            <option>Married Filing Separately</option>
+            <option>Head of Household</option>
+            <option>Qualifying Surviving Spouse</option>
+          </select>
+        </div>
+        <div class="fg"><label>Last Tax Year Filed</label>
+          <select id="p-taxYear">
+            <option value="">-- Select --</option>
+            <option>2025</option>
+            <option>2024</option>
+            <option>2023</option>
+            <option>2022</option>
+            <option>2021 or earlier</option>
+            <option>Never filed</option>
+          </select>
+        </div>
+      </div>
+      <div class="gr2">
+        <div class="fg"><label>Number of Dependents</label><input type="number" id="p-dependents" min="0" placeholder="0"></div>
+        <div class="fg"><label>State(s) of Residence</label><input type="text" id="p-states" placeholder="e.g. IL"></div>
+      </div>
+      <div class="sec-label">Income Sources (select all that apply)</div>
+      <div class="cbs">
+        <label class="cb"><input type="checkbox" value="W-2 Employment"> W-2 Employment</label>
+        <label class="cb"><input type="checkbox" value="Self-Employment / 1099"> Self-Employment / 1099</label>
+        <label class="cb"><input type="checkbox" value="Rental Income"> Rental Income</label>
+        <label class="cb"><input type="checkbox" value="Investment Income"> Investment Income (stocks, dividends)</label>
+        <label class="cb"><input type="checkbox" value="Retirement / Pension"> Retirement / Pension</label>
+        <label class="cb"><input type="checkbox" value="Partnership / S-Corp K-1"> Partnership / S-Corp K-1</label>
+        <label class="cb"><input type="checkbox" value="Cryptocurrency"> Cryptocurrency</label>
+        <label class="cb"><input type="checkbox" value="Other Income"> Other Income</label>
+      </div>
+      <div class="sec-label">Additional Complexity (select all that apply)</div>
+      <div class="cbs">
+        <label class="cb"><input type="checkbox" value="Itemized deductions"> Itemized deductions</label>
+        <label class="cb"><input type="checkbox" value="Home purchase or sale"> Home purchase or sale</label>
+        <label class="cb"><input type="checkbox" value="Foreign income or accounts"> Foreign income or accounts</label>
+        <label class="cb"><input type="checkbox" value="Major life event"> Major life event (marriage, divorce, new child)</label>
+        <label class="cb"><input type="checkbox" value="Prior year amendments"> Prior year amendments needed</label>
+        <label class="cb"><input type="checkbox" value="IRS notice or audit"> IRS notice or audit</label>
+      </div>
+      <div class="nav"><button class="btn-back" onclick="pGo(0)">← Back</button><button class="btn-next" onclick="pGo(2)">Next →</button></div>
+    </div>
+
+    <!-- Step 3: Goals & Logistics -->
+    <div class="sp" id="p-step2">
+      <div class="sh">Goals & Logistics</div>
+      <div class="sd">Last few details to help us prepare your quote.</div>
+      <div class="fg"><label>Who prepared your taxes last year?</label>
+        <select id="p-priorPreparer">
+          <option value="">-- Select --</option>
+          <option>CPA or accounting firm</option>
+          <option>H&R Block / TurboTax / DIY</option>
+          <option>Different preparer</option>
+          <option>First time filing</option>
+        </select>
+      </div>
+      <div class="fg"><label>Are you looking to switch preparers?</label>
+        <select id="p-switching">
+          <option value="">-- Select --</option>
+          <option>Yes</option>
+          <option>No, first time using a professional</option>
+          <option>Just exploring options</option>
+        </select>
+      </div>
+      <div class="gr2">
+        <div class="fg"><label>When do you need your return completed?</label>
+          <select id="p-startDate">
+            <option value="">-- Select --</option>
+            <option>As soon as possible</option>
+            <option>Within 30 days</option>
+            <option>Before the extension deadline</option>
+            <option>No rush — whenever works</option>
+          </select>
+        </div>
+        <div class="fg"><label>Preferred Meeting Format</label>
+          <select id="p-meetingFormat">
+            <option value="">-- Select --</option>
+            <option>Video conference</option>
+            <option>Phone call</option>
+            <option>In person</option>
+            <option>No meeting needed — remote only</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>Anything else we should know?</label><textarea id="p-notes" placeholder="Additional context, questions, or special circumstances..."></textarea></div>
+      <div id="p-submitErr" class="err">Something went wrong. Please try again or email us at info@ramotconsultinggroup.com.</div>
+      <div class="nav"><button class="btn-back" onclick="pGo(1)">← Back</button><button class="btn-submit" id="p-submitBtn" onclick="submitPersonal()">Submit →</button></div>
+    </div>
+
   </div>
+</div>
 
-  <!-- Step 2: Business -->
-  <div class="sp" id="step1">
-    <div class="sh">Business Overview</div>
-    <div class="sd">Help us understand your business.</div>
-    <div class="gr2"><div class="fg"><label>Legal Business Name</label><input type="text" id="legalName"></div><div class="fg"><label>DBA (if applicable)</label><input type="text" id="dba"></div></div>
-    <div class="gr3">
-      <div class="fg"><label>Entity Type</label><select id="entityType"><option value="">-- Select --</option><option>LLC</option><option>S-Corp</option><option>C-Corp</option><option>Sole Prop</option><option>Partnership</option></select></div>
-      <div class="fg"><label>State of Formation</label><input type="text" id="state" placeholder="IL"></div>
-      <div class="fg"><label>Year Founded</label><input type="text" id="yearFounded" placeholder="2018"></div>
+<!-- ===================== BUSINESS FORM ===================== -->
+<div id="business-form" style="display:none">
+  <div class="wrap">
+
+    <!-- Step 1: Contact -->
+    <div class="sp active" id="b-step0">
+      <div class="sh">Contact Information</div>
+      <div class="sd">Tell us who we'll be working with.</div>
+      <div class="gr2"><div class="fg"><label>First Name</label><input type="text" id="b-firstName" placeholder="Jane"></div><div class="fg"><label>Last Name</label><input type="text" id="b-lastName" placeholder="Smith"></div></div>
+      <div class="gr2"><div class="fg"><label>Title</label><input type="text" id="b-title" placeholder="CEO"></div><div class="fg"><label>Company</label><input type="text" id="b-company" placeholder="Acme Inc."></div></div>
+      <div class="gr2"><div class="fg"><label>Email</label><input type="email" id="b-email" placeholder="jane@acme.com"></div><div class="fg"><label>Phone</label><input type="tel" id="b-phone" placeholder="(312) 555-0100"></div></div>
+      <div class="gr2">
+        <div class="fg"><label>Preferred Contact</label><select id="b-preferredContact"><option>Email</option><option>Phone</option><option>Text</option></select></div>
+        <div class="fg"><label>How did you hear about us?</label><select id="b-referralSource"><option value="">-- Select --</option><option>Referral</option><option>LinkedIn</option><option>Google Search</option><option>Other</option></select></div>
+      </div>
+      <div class="nav"><button class="btn-back" onclick="backToRoute()">← Back</button><button class="btn-next" onclick="bGo(1)">Next →</button></div>
     </div>
-    <div class="gr3">
-      <div class="fg"><label>Industry</label><input type="text" id="industry" placeholder="e.g. Retail, SaaS"></div>
-      <div class="fg"><label># of Owners</label><input type="number" id="owners" min="1" placeholder="1"></div>
-      <div class="fg"><label># of Employees</label><input type="number" id="employees" min="0" placeholder="5"></div>
+
+    <!-- Step 2: Business -->
+    <div class="sp" id="b-step1">
+      <div class="sh">Business Overview</div>
+      <div class="sd">Help us understand your business.</div>
+      <div class="gr2"><div class="fg"><label>Legal Business Name</label><input type="text" id="b-legalName"></div><div class="fg"><label>DBA (if applicable)</label><input type="text" id="b-dba"></div></div>
+      <div class="gr3">
+        <div class="fg"><label>Entity Type</label><select id="b-entityType"><option value="">-- Select --</option><option>LLC</option><option>S-Corp</option><option>C-Corp</option><option>Sole Prop</option><option>Partnership</option></select></div>
+        <div class="fg"><label>State of Formation</label><input type="text" id="b-state" placeholder="IL"></div>
+        <div class="fg"><label>Year Founded</label><input type="text" id="b-yearFounded" placeholder="2018"></div>
+      </div>
+      <div class="gr3">
+        <div class="fg"><label>Industry</label><input type="text" id="b-industry" placeholder="e.g. Retail, SaaS"></div>
+        <div class="fg"><label># of Owners</label><input type="number" id="b-owners" min="1" placeholder="1"></div>
+        <div class="fg"><label># of Employees</label><input type="number" id="b-employees" min="0" placeholder="5"></div>
+      </div>
+      <div class="fg"><label>Use of Contractors?</label><select id="b-contractors"><option value="">-- Select --</option><option>Yes, regularly</option><option>Yes, occasionally</option><option>No</option></select></div>
+      <div class="fg"><label>Brief Business Description</label><textarea id="b-description" placeholder="What does your business do?"></textarea></div>
+      <div class="nav"><button class="btn-back" onclick="bGo(0)">← Back</button><button class="btn-next" onclick="bGo(2)">Next →</button></div>
     </div>
-    <div class="fg"><label>Use of Contractors?</label><select id="contractors"><option value="">-- Select --</option><option>Yes, regularly</option><option>Yes, occasionally</option><option>No</option></select></div>
-    <div class="fg"><label>Brief Business Description</label><textarea id="description" placeholder="What does your business do?"></textarea></div>
-    <div class="nav"><button class="btn-back" onclick="go(0)">← Back</button><button class="btn-next" onclick="go(2)">Next →</button></div>
+
+    <!-- Step 3: Services -->
+    <div class="sp" id="b-step2">
+      <div class="sh">Services Needed</div>
+      <div class="sd">Select all that apply — we'll scope accordingly.</div>
+      <div class="sec-label">Accounting & Compliance</div>
+      <div class="cbs">
+        <label class="cb"><input type="checkbox" value="Bookkeeping"> Bookkeeping</label>
+        <label class="cb"><input type="checkbox" value="Month-End Close"> Month-End Close</label>
+        <label class="cb"><input type="checkbox" value="Financial Statements"> Financial Statements</label>
+        <label class="cb"><input type="checkbox" value="Payroll"> Payroll</label>
+        <label class="cb"><input type="checkbox" value="Tax Preparation"> Tax Preparation</label>
+        <label class="cb"><input type="checkbox" value="Sales Tax Compliance"> Sales Tax Compliance</label>
+      </div>
+      <div class="sec-label">Strategic Finance</div>
+      <div class="cbs">
+        <label class="cb"><input type="checkbox" value="Fractional CFO"> Fractional CFO</label>
+        <label class="cb"><input type="checkbox" value="Financial Reporting"> Financial Reporting</label>
+        <label class="cb"><input type="checkbox" value="Business Incorporation"> Business Incorporation</label>
+        <label class="cb"><input type="checkbox" value="AI Integration"> AI Integration</label>
+        <label class="cb"><input type="checkbox" value="Budgeting & Forecasting"> Budgeting & Forecasting</label>
+        <label class="cb"><input type="checkbox" value="KPI Dashboard Setup"> KPI Dashboard Setup</label>
+      </div>
+      <div class="sec-label">Transaction Advisory</div>
+      <div class="cbs">
+        <label class="cb"><input type="checkbox" value="Due Diligence"> Due Diligence</label>
+        <label class="cb"><input type="checkbox" value="Quality of Earnings"> Quality of Earnings</label>
+        <label class="cb"><input type="checkbox" value="Deal Structuring"> Deal Structuring</label>
+        <label class="cb"><input type="checkbox" value="Post-Transaction Integration"> Post-Transaction Integration</label>
+      </div>
+      <div class="fg" style="margin-top:20px"><label>What's driving the need right now?</label><textarea id="b-drivingNeed" placeholder="e.g. Growing fast and need better financial visibility, preparing for a sale..."></textarea></div>
+      <div class="nav"><button class="btn-back" onclick="bGo(1)">← Back</button><button class="btn-next" onclick="bGo(3)">Next →</button></div>
+    </div>
+
+    <!-- Step 4: Financials -->
+    <div class="sp" id="b-step3">
+      <div class="sh">Financial Complexity</div>
+      <div class="sd">This helps us scope the engagement accurately.</div>
+      <div class="gr2">
+        <div class="fg"><label>Annual Revenue (approx.)</label><select id="b-revenue"><option value="">-- Select --</option><option>Under $500K</option><option>$500K – $1M</option><option>$1M – $3M</option><option>$3M – $10M</option><option>$10M+</option></select></div>
+        <div class="fg"><label>Monthly Transaction Volume</label><select id="b-transactions"><option value="">-- Select --</option><option>Under 100</option><option>100 – 500</option><option>500 – 2,000</option><option>2,000+</option></select></div>
+      </div>
+      <div class="gr2">
+        <div class="fg"><label># of Bank/CC Accounts</label><input type="number" id="b-bankAccounts" min="0" placeholder="3"></div>
+        <div class="fg"><label># of Legal Entities</label><input type="number" id="b-entities" min="1" placeholder="1"></div>
+      </div>
+      <div class="fg"><label>Current Accounting Software</label>
+        <select id="b-software">
+          <option value="">-- Select --</option>
+          <option>QuickBooks Online</option>
+          <option>QuickBooks Desktop</option>
+          <option>Xero</option>
+          <option>NetSuite</option>
+          <option>Wave</option>
+          <option>Spreadsheets only</option>
+          <option>None</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="fg"><label>How current are your books?</label><select id="b-booksCurrent"><option value="">-- Select --</option><option>Up to date</option><option>1–3 months behind</option><option>3–6 months behind</option><option>6+ months behind / starting fresh</option></select></div>
+      <div class="sec-label">Complexity Factors (select all that apply)</div>
+      <div class="cbs">
+        <label class="cb"><input type="checkbox" value="Multi-state operations"> Multi-state operations</label>
+        <label class="cb"><input type="checkbox" value="International activity"> International activity</label>
+        <label class="cb"><input type="checkbox" value="Inventory / COGS"> Inventory / COGS</label>
+        <label class="cb"><input type="checkbox" value="E-commerce"> E-commerce</label>
+        <label class="cb"><input type="checkbox" value="Equity compensation"> Equity compensation</label>
+        <label class="cb"><input type="checkbox" value="Real estate holdings"> Real estate holdings</label>
+        <label class="cb"><input type="checkbox" value="Intercompany transactions"> Intercompany transactions</label>
+        <label class="cb"><input type="checkbox" value="Outside investors / lenders"> Outside investors / lenders</label>
+      </div>
+      <div class="nav"><button class="btn-back" onclick="bGo(2)">← Back</button><button class="btn-next" onclick="bGo(4)">Next →</button></div>
+    </div>
+
+    <!-- Step 5: Goals -->
+    <div class="sp" id="b-step4">
+      <div class="sh">Goals & Logistics</div>
+      <div class="sd">Final details to help us prepare your proposal.</div>
+      <div class="fg"><label>What outcomes are you looking for?</label><textarea id="b-outcomes" placeholder="e.g. Clean books, better cash flow visibility, ready for a capital raise..."></textarea></div>
+      <div class="gr2">
+        <div class="fg"><label>Target Start Date</label><input type="date" id="b-startDate"></div>
+        <div class="fg"><label>Monthly Budget Range</label><select id="b-budget"><option value="">-- Select --</option><option>Under $1,000/mo</option><option>$1,000 – $2,500/mo</option><option>$2,500 – $5,000/mo</option><option>$5,000+/mo</option><option>Project-based / TBD</option></select></div>
+      </div>
+      <div class="gr2">
+        <div class="fg"><label>Current CPA / Accountant?</label><select id="b-currentCPA"><option value="">-- Select --</option><option>Yes</option><option>No</option></select></div>
+        <div class="fg"><label>Current Attorney?</label><select id="b-currentAttorney"><option value="">-- Select --</option><option>Yes</option><option>No</option></select></div>
+      </div>
+      <div class="fg"><label>Are you replacing a current provider?</label><select id="b-replacing"><option value="">-- Select --</option><option>Yes</option><option>No</option><option>First time engaging outside help</option></select></div>
+      <div class="fg"><label>Preferred Discovery Call Format</label>
+        <select id="b-callFormat">
+          <option value="">-- Select --</option>
+          <option>Video conference</option>
+          <option>Phone call</option>
+          <option>In person</option>
+        </select>
+      </div>
+      <div class="fg"><label>Anything else we should know?</label><textarea id="b-notes" placeholder="Additional context, questions, or special circumstances..."></textarea></div>
+      <div id="b-submitErr" class="err">Something went wrong. Please try again or email us at info@ramotconsultinggroup.com.</div>
+      <div class="nav"><button class="btn-back" onclick="bGo(3)">← Back</button><button class="btn-submit" id="b-submitBtn" onclick="submitBusiness()">Submit →</button></div>
+    </div>
+
   </div>
+</div>
 
-  <!-- Step 3: Services -->
-  <div class="sp" id="step2">
-    <div class="sh">Services Needed</div>
-    <div class="sd">Select all that apply — we'll scope accordingly.</div>
-    <div class="sec-label">Accounting & Compliance</div>
-    <div class="cbs">
-      <label class="cb"><input type="checkbox" value="Bookkeeping"> Bookkeeping</label>
-      <label class="cb"><input type="checkbox" value="Month-End Close"> Month-End Close</label>
-      <label class="cb"><input type="checkbox" value="Financial Statements"> Financial Statements</label>
-      <label class="cb"><input type="checkbox" value="Payroll"> Payroll</label>
-      <label class="cb"><input type="checkbox" value="Tax Preparation"> Tax Preparation</label>
-      <label class="cb"><input type="checkbox" value="Sales Tax Compliance"> Sales Tax Compliance</label>
-    </div>
-    <div class="sec-label">Strategic Finance</div>
-    <div class="cbs">
-      <label class="cb"><input type="checkbox" value="Fractional CFO"> Fractional CFO</label>
-      <label class="cb"><input type="checkbox" value="Financial Reporting"> Financial Reporting</label>
-      <label class="cb"><input type="checkbox" value="Business Incorporation"> Business Incorporation</label>
-      <label class="cb"><input type="checkbox" value="AI Integration"> AI Integration</label>
-      <label class="cb"><input type="checkbox" value="Budgeting & Forecasting"> Budgeting & Forecasting</label>
-      <label class="cb"><input type="checkbox" value="KPI Dashboard Setup"> KPI Dashboard Setup</label>
-    </div>
-    <div class="sec-label">Transaction Advisory</div>
-    <div class="cbs">
-      <label class="cb"><input type="checkbox" value="Due Diligence"> Due Diligence</label>
-      <label class="cb"><input type="checkbox" value="Quality of Earnings"> Quality of Earnings</label>
-      <label class="cb"><input type="checkbox" value="Deal Structuring"> Deal Structuring</label>
-      <label class="cb"><input type="checkbox" value="Post-Transaction Integration"> Post-Transaction Integration</label>
-    </div>
-    <div class="fg" style="margin-top:20px"><label>What's driving the need right now?</label><textarea id="drivingNeed" placeholder="e.g. Growing fast and need better financial visibility, preparing for a sale..."></textarea></div>
-    <div class="nav"><button class="btn-back" onclick="go(1)">← Back</button><button class="btn-next" onclick="go(3)">Next →</button></div>
-  </div>
-
-  <!-- Step 4: Financials -->
-  <div class="sp" id="step3">
-    <div class="sh">Financial Complexity</div>
-    <div class="sd">This helps us scope the engagement accurately.</div>
-    <div class="gr2">
-      <div class="fg"><label>Annual Revenue (approx.)</label><select id="revenue"><option value="">-- Select --</option><option>Under $500K</option><option>$500K – $1M</option><option>$1M – $3M</option><option>$3M – $10M</option><option>$10M+</option></select></div>
-      <div class="fg"><label>Monthly Transaction Volume</label><select id="transactions"><option value="">-- Select --</option><option>Under 100</option><option>100 – 500</option><option>500 – 2,000</option><option>2,000+</option></select></div>
-    </div>
-    <div class="gr2">
-      <div class="fg"><label># of Bank/CC Accounts</label><input type="number" id="bankAccounts" min="0" placeholder="3"></div>
-      <div class="fg"><label># of Legal Entities</label><input type="number" id="entities" min="1" placeholder="1"></div>
-    </div>
-    <div class="fg"><label>Current Accounting Software</label>
-      <select id="software">
-        <option value="">-- Select --</option>
-        <option>QuickBooks Online</option>
-        <option>QuickBooks Desktop</option>
-        <option>Xero</option>
-        <option>NetSuite</option>
-        <option>Wave</option>
-        <option>Spreadsheets only</option>
-        <option>None</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <div class="fg"><label>How current are your books?</label><select id="booksCurrent"><option value="">-- Select --</option><option>Up to date</option><option>1–3 months behind</option><option>3–6 months behind</option><option>6+ months behind / starting fresh</option></select></div>
-    <div class="sec-label">Complexity Factors (select all that apply)</div>
-    <div class="cbs">
-      <label class="cb"><input type="checkbox" value="Multi-state operations"> Multi-state operations</label>
-      <label class="cb"><input type="checkbox" value="International activity"> International activity</label>
-      <label class="cb"><input type="checkbox" value="Inventory / COGS"> Inventory / COGS</label>
-      <label class="cb"><input type="checkbox" value="E-commerce"> E-commerce</label>
-      <label class="cb"><input type="checkbox" value="Equity compensation"> Equity compensation</label>
-      <label class="cb"><input type="checkbox" value="Real estate holdings"> Real estate holdings</label>
-      <label class="cb"><input type="checkbox" value="Intercompany transactions"> Intercompany transactions</label>
-      <label class="cb"><input type="checkbox" value="Outside investors / lenders"> Outside investors / lenders</label>
-    </div>
-    <div class="nav"><button class="btn-back" onclick="go(2)">← Back</button><button class="btn-next" onclick="go(4)">Next →</button></div>
-  </div>
-
-  <!-- Step 5: Goals -->
-  <div class="sp" id="step4">
-    <div class="sh">Goals & Logistics</div>
-    <div class="sd">Final details to help us prepare your proposal.</div>
-    <div class="fg"><label>What outcomes are you looking for?</label><textarea id="outcomes" placeholder="e.g. Clean books, better cash flow visibility, ready for a capital raise..."></textarea></div>
-    <div class="gr2">
-      <div class="fg"><label>Target Start Date</label><input type="date" id="startDate"></div>
-      <div class="fg"><label>Monthly Budget Range</label><select id="budget"><option value="">-- Select --</option><option>Under $1,000/mo</option><option>$1,000 – $2,500/mo</option><option>$2,500 – $5,000/mo</option><option>$5,000+/mo</option><option>Project-based / TBD</option></select></div>
-    </div>
-    <div class="gr2">
-      <div class="fg"><label>Current CPA / Accountant?</label><select id="currentCPA"><option value="">-- Select --</option><option>Yes</option><option>No</option></select></div>
-      <div class="fg"><label>Current Attorney?</label><select id="currentAttorney"><option value="">-- Select --</option><option>Yes</option><option>No</option></select></div>
-    </div>
-    <div class="fg"><label>Are you replacing a current provider?</label><select id="replacing"><option value="">-- Select --</option><option>Yes</option><option>No</option><option>First time engaging outside help</option></select></div>
-    <div class="fg"><label>Preferred Discovery Call Format</label>
-      <select id="callFormat">
-        <option value="">-- Select --</option>
-        <option>Video conference</option>
-        <option>Phone call</option>
-        <option>In person</option>
-      </select>
-    </div>
-    <div class="fg"><label>Anything else we should know?</label><textarea id="notes" placeholder="Additional context, questions, or special circumstances..."></textarea></div>
-    <div id="submitErr" class="err">Something went wrong. Please try again or email us at info@ramotconsultinggroup.com.</div>
-    <div class="nav"><button class="btn-back" onclick="go(3)">← Back</button><button class="btn-submit" id="submitBtn" onclick="submitForm()">Submit →</button></div>
-  </div>
-
-  <!-- Success -->
-  <div class="success" id="success">
-    <div class="check-circle">✓</div>
-    <h2>Thank you!</h2>
-    <p>We've received your intake form and will be in touch within one business day to schedule your discovery call.</p>
-  </div>
-
+<!-- SUCCESS -->
+<div class="success" id="success">
+  <div class="check-circle">✓</div>
+  <h2>Thank you!</h2>
+  <p>We've received your intake form and will be in touch within one business day.</p>
 </div>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCClczaoK-2WZnlKktYivyUsatBqEyjY1fX0DX8DKneTjuWs4r7uesP-hAdrMGD57I/exec';
-  let cur = 0;
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCClczaoK-2WZnlKktYivyUsatBqEyjY1fX0DX8DKneTjuWs4r7uesP-hAdrMGD57I/exec';
 
-  document.querySelectorAll('.cb').forEach(cb => {
-    cb.addEventListener('click', function() { this.classList.toggle('checked'); });
-  });
+let currentPath = null;
+let pCur = 0;
+let bCur = 0;
 
-  function go(n) {
-    document.getElementById('step' + cur).classList.remove('active');
-    cur = n;
-    document.getElementById('step' + cur).classList.add('active');
-    document.querySelectorAll('.si').forEach((si, i) => {
-      si.classList.remove('active', 'done');
-      const sc = si.querySelector('.sc');
-      sc.classList.remove('active', 'done');
-      if (i < cur) { si.classList.add('done'); sc.classList.add('done'); sc.textContent = '✓'; }
-      else if (i === cur) { si.classList.add('active'); sc.classList.add('active'); sc.textContent = i + 1; }
-      else { sc.textContent = i + 1; }
-    });
-    window.scrollTo(0, 0);
+const pSteps = ['Contact', 'Tax Situation', 'Goals'];
+const bSteps = ['Contact', 'Business', 'Services', 'Financials', 'Goals'];
+
+document.querySelectorAll('.cb').forEach(cb => {
+  cb.addEventListener('click', function() { this.classList.toggle('checked'); });
+});
+
+function startPath(path) {
+  currentPath = path;
+  document.getElementById('route-screen').style.display = 'none';
+  document.getElementById('progress-bar').style.display = 'block';
+
+  if (path === 'personal') {
+    document.getElementById('personal-form').style.display = 'block';
+    document.getElementById('header-sub').textContent = 'Personal Tax Intake';
+    renderSteps(pSteps, 0, 'p');
+  } else {
+    document.getElementById('business-form').style.display = 'block';
+    document.getElementById('header-sub').textContent = 'Business Services Intake';
+    renderSteps(bSteps, 0, 'b');
   }
+  window.scrollTo(0, 0);
+}
 
-  function getChecked(container) {
-    return Array.from(container.querySelectorAll('input[type=checkbox]:checked'))
-      .map(cb => cb.value).join(', ') || 'None selected';
-  }
+function backToRoute() {
+  document.getElementById('route-screen').style.display = 'block';
+  document.getElementById('progress-bar').style.display = 'none';
+  document.getElementById('personal-form').style.display = 'none';
+  document.getElementById('business-form').style.display = 'none';
+  document.getElementById('header-sub').textContent = 'New Client Intake';
+  pCur = 0; bCur = 0;
+  document.querySelectorAll('.sp').forEach(s => s.classList.remove('active'));
+  document.getElementById('p-step0').classList.add('active');
+  document.getElementById('b-step0').classList.add('active');
+  window.scrollTo(0, 0);
+}
 
-  async function submitForm() {
-    const btn = document.getElementById('submitBtn');
-    const err = document.getElementById('submitErr');
-    btn.disabled = true;
-    btn.textContent = 'Submitting...';
-    err.style.display = 'none';
-
-    const serviceBoxes = document.querySelectorAll('#step2 input[type=checkbox]');
-    const complexityBoxes = document.querySelectorAll('#step3 input[type=checkbox]');
-
-    const data = {
-      formType: 'intake',
-      firstName: document.getElementById('firstName').value,
-      lastName: document.getElementById('lastName').value,
-      title: document.getElementById('title').value,
-      company: document.getElementById('company').value,
-      email: document.getElementById('email').value,
-      phone: document.getElementById('phone').value,
-      preferredContact: document.getElementById('preferredContact').value,
-      referralSource: document.getElementById('referralSource').value,
-      legalName: document.getElementById('legalName').value,
-      dba: document.getElementById('dba').value,
-      entityType: document.getElementById('entityType').value,
-      state: document.getElementById('state').value,
-      yearFounded: document.getElementById('yearFounded').value,
-      industry: document.getElementById('industry').value,
-      owners: document.getElementById('owners').value,
-      employees: document.getElementById('employees').value,
-      contractors: document.getElementById('contractors').value,
-      description: document.getElementById('description').value,
-      services: Array.from(serviceBoxes).filter(c=>c.checked).map(c=>c.value).join(', ') || 'None selected',
-      drivingNeed: document.getElementById('drivingNeed').value,
-      revenue: document.getElementById('revenue').value,
-      transactions: document.getElementById('transactions').value,
-      bankAccounts: document.getElementById('bankAccounts').value,
-      entities: document.getElementById('entities').value,
-      software: document.getElementById('software').value,
-      booksCurrent: document.getElementById('booksCurrent').value,
-      complexityFactors: Array.from(complexityBoxes).filter(c=>c.checked).map(c=>c.value).join(', ') || 'None',
-      outcomes: document.getElementById('outcomes').value,
-      startDate: document.getElementById('startDate').value,
-      budget: document.getElementById('budget').value,
-      currentCPA: document.getElementById('currentCPA').value,
-      currentAttorney: document.getElementById('currentAttorney').value,
-      replacing: document.getElementById('replacing').value,
-      callFormat: document.getElementById('callFormat').value,
-      notes: document.getElementById('notes').value
-    };
-
-    try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      document.getElementById('step4').classList.remove('active');
-      document.getElementById('success').classList.add('active');
-      document.querySelectorAll('.si').forEach(si => {
-        si.classList.add('done');
-        const sc = si.querySelector('.sc');
-        sc.classList.add('done'); sc.textContent = '✓';
-      });
-      window.scrollTo(0, 0);
-    } catch(e) {
-      err.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Submit →';
+function renderSteps(steps, cur, prefix) {
+  const sis = document.getElementById('sis');
+  sis.innerHTML = '';
+  steps.forEach((label, i) => {
+    const si = document.createElement('div');
+    si.className = 'si' + (i === cur ? ' active' : i < cur ? ' done' : '');
+    const sc = document.createElement('div');
+    sc.className = 'sc' + (i === cur ? ' active' : i < cur ? ' done' : '');
+    sc.textContent = i < cur ? '✓' : i + 1;
+    const sl = document.createElement('div');
+    sl.className = 'sl';
+    sl.textContent = label;
+    si.appendChild(sc);
+    si.appendChild(sl);
+    sis.appendChild(si);
+    if (i < steps.length - 1) {
+      const line = document.createElement('div');
+      line.className = 'sline';
+      sis.appendChild(line);
     }
+  });
+}
+
+function pGo(n) {
+  document.getElementById('p-step' + pCur).classList.remove('active');
+  pCur = n;
+  document.getElementById('p-step' + pCur).classList.add('active');
+  renderSteps(pSteps, pCur, 'p');
+  window.scrollTo(0, 0);
+}
+
+function bGo(n) {
+  document.getElementById('b-step' + bCur).classList.remove('active');
+  bCur = n;
+  document.getElementById('b-step' + bCur).classList.add('active');
+  renderSteps(bSteps, bCur, 'b');
+  window.scrollTo(0, 0);
+}
+
+function getChecked(container) {
+  return Array.from(container.querySelectorAll('input[type=checkbox]:checked'))
+    .map(cb => cb.value).join(', ') || 'None selected';
+}
+
+async function submitPersonal() {
+  const btn = document.getElementById('p-submitBtn');
+  const err = document.getElementById('p-submitErr');
+  btn.disabled = true; btn.textContent = 'Submitting...'; err.style.display = 'none';
+
+  const incomeSources = getChecked(document.getElementById('p-step1').querySelectorAll('.cb')[0]?.closest('.cbs') || document.querySelector('#p-step1 .cbs'));
+  const allCbs = document.querySelectorAll('#p-step1 .cbs');
+
+  const data = {
+    formType: 'personal-tax',
+    firstName: document.getElementById('p-firstName').value,
+    lastName: document.getElementById('p-lastName').value,
+    email: document.getElementById('p-email').value,
+    phone: document.getElementById('p-phone').value,
+    preferredContact: document.getElementById('p-preferredContact').value,
+    referralSource: document.getElementById('p-referralSource').value,
+    filingStatus: document.getElementById('p-filingStatus').value,
+    taxYear: document.getElementById('p-taxYear').value,
+    dependents: document.getElementById('p-dependents').value,
+    states: document.getElementById('p-states').value,
+    incomeSources: allCbs[0] ? Array.from(allCbs[0].querySelectorAll('input:checked')).map(c=>c.value).join(', ') || 'None' : 'None',
+    complexity: allCbs[1] ? Array.from(allCbs[1].querySelectorAll('input:checked')).map(c=>c.value).join(', ') || 'None' : 'None',
+    priorPreparer: document.getElementById('p-priorPreparer').value,
+    switching: document.getElementById('p-switching').value,
+    startDate: document.getElementById('p-startDate').value,
+    meetingFormat: document.getElementById('p-meetingFormat').value,
+    notes: document.getElementById('p-notes').value
+  };
+
+  try {
+    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    document.getElementById('personal-form').style.display = 'none';
+    document.getElementById('progress-bar').style.display = 'none';
+    document.getElementById('success').classList.add('active');
+    window.scrollTo(0, 0);
+  } catch(e) {
+    err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Submit →';
   }
+}
+
+async function submitBusiness() {
+  const btn = document.getElementById('b-submitBtn');
+  const err = document.getElementById('b-submitErr');
+  btn.disabled = true; btn.textContent = 'Submitting...'; err.style.display = 'none';
+
+  const serviceCbs = document.querySelectorAll('#b-step2 input[type=checkbox]');
+  const complexityCbs = document.querySelectorAll('#b-step3 input[type=checkbox]');
+
+  const data = {
+    formType: 'intake',
+    firstName: document.getElementById('b-firstName').value,
+    lastName: document.getElementById('b-lastName').value,
+    title: document.getElementById('b-title').value,
+    company: document.getElementById('b-company').value,
+    email: document.getElementById('b-email').value,
+    phone: document.getElementById('b-phone').value,
+    preferredContact: document.getElementById('b-preferredContact').value,
+    referralSource: document.getElementById('b-referralSource').value,
+    legalName: document.getElementById('b-legalName').value,
+    dba: document.getElementById('b-dba').value,
+    entityType: document.getElementById('b-entityType').value,
+    state: document.getElementById('b-state').value,
+    yearFounded: document.getElementById('b-yearFounded').value,
+    industry: document.getElementById('b-industry').value,
+    owners: document.getElementById('b-owners').value,
+    employees: document.getElementById('b-employees').value,
+    contractors: document.getElementById('b-contractors').value,
+    description: document.getElementById('b-description').value,
+    services: Array.from(serviceCbs).filter(c=>c.checked).map(c=>c.value).join(', ') || 'None selected',
+    drivingNeed: document.getElementById('b-drivingNeed').value,
+    revenue: document.getElementById('b-revenue').value,
+    transactions: document.getElementById('b-transactions').value,
+    bankAccounts: document.getElementById('b-bankAccounts').value,
+    entities: document.getElementById('b-entities').value,
+    software: document.getElementById('b-software').value,
+    booksCurrent: document.getElementById('b-booksCurrent').value,
+    complexityFactors: Array.from(complexityCbs).filter(c=>c.checked).map(c=>c.value).join(', ') || 'None',
+    outcomes: document.getElementById('b-outcomes').value,
+    startDate: document.getElementById('b-startDate').value,
+    budget: document.getElementById('b-budget').value,
+    currentCPA: document.getElementById('b-currentCPA').value,
+    currentAttorney: document.getElementById('b-currentAttorney').value,
+    replacing: document.getElementById('b-replacing').value,
+    callFormat: document.getElementById('b-callFormat').value,
+    notes: document.getElementById('b-notes').value
+  };
+
+  try {
+    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    document.getElementById('business-form').style.display = 'none';
+    document.getElementById('progress-bar').style.display = 'none';
+    document.getElementById('success').classList.add('active');
+    window.scrollTo(0, 0);
+  } catch(e) {
+    err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Submit →';
+  }
+}
 </script>
 </body>
 </html>
