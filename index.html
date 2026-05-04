@@ -137,14 +137,15 @@
     <!-- Step 1: Contact -->
     <div class="sp active" id="p-step0">
       <div class="sh">Contact Information</div>
-      <div class="sd">Tell us a little about yourself.</div>
-      <div class="gr2"><div class="fg"><label>First Name</label><input type="text" id="p-firstName" placeholder="Jane"></div><div class="fg"><label>Last Name</label><input type="text" id="p-lastName" placeholder="Smith"></div></div>
-      <div class="gr2"><div class="fg"><label>Email</label><input type="email" id="p-email" placeholder="jane@email.com"></div><div class="fg"><label>Phone</label><input type="tel" id="p-phone" placeholder="(312) 555-0100"></div></div>
+      <div class="sd">Tell us a little about yourself. <span style="color:#c00;font-size:12px">* Required fields</span></div>
+      <div class="gr2"><div class="fg"><label>First Name <span style="color:#c00">*</span></label><input type="text" id="p-firstName" placeholder="Jane"></div><div class="fg"><label>Last Name <span style="color:#c00">*</span></label><input type="text" id="p-lastName" placeholder="Smith"></div></div>
+      <div class="gr2"><div class="fg"><label>Email <span style="color:#c00">*</span></label><input type="email" id="p-email" placeholder="jane@email.com"></div><div class="fg"><label>Phone</label><input type="tel" id="p-phone" placeholder="(312) 555-0100"></div></div>
       <div class="gr2">
         <div class="fg"><label>Preferred Contact</label><select id="p-preferredContact"><option>Email</option><option>Phone</option><option>Text</option></select></div>
         <div class="fg"><label>How did you hear about us?</label><select id="p-referralSource"><option value="">-- Select --</option><option>Referral</option><option>LinkedIn</option><option>Google Search</option><option>Other</option></select></div>
       </div>
-      <div class="nav"><button class="btn-back" onclick="backToRoute()">← Back</button><button class="btn-next" onclick="pGo(1)">Next →</button></div>
+      <div id="p-step0-err" style="display:none;color:#c00;font-size:13px;margin-top:8px;padding:8px 12px;background:#fff0f0;border-radius:4px;border:1px solid #ffcccc">Please fill in all required fields before continuing.</div>
+      <div class="nav"><button class="btn-back" onclick="backToRoute()">← Back</button><button class="btn-next" onclick="pValidateStep0()">Next →</button></div>
     </div>
 
     <!-- Step 2: Tax Situation -->
@@ -257,15 +258,16 @@
     <!-- Step 1: Contact -->
     <div class="sp active" id="b-step0">
       <div class="sh">Contact Information</div>
-      <div class="sd">Tell us who we'll be working with.</div>
-      <div class="gr2"><div class="fg"><label>First Name</label><input type="text" id="b-firstName" placeholder="Jane"></div><div class="fg"><label>Last Name</label><input type="text" id="b-lastName" placeholder="Smith"></div></div>
+      <div class="sd">Tell us who we'll be working with. <span style="color:#c00;font-size:12px">* Required fields</span></div>
+      <div class="gr2"><div class="fg"><label>First Name <span style="color:#c00">*</span></label><input type="text" id="b-firstName" placeholder="Jane"></div><div class="fg"><label>Last Name <span style="color:#c00">*</span></label><input type="text" id="b-lastName" placeholder="Smith"></div></div>
       <div class="gr2"><div class="fg"><label>Title</label><input type="text" id="b-title" placeholder="CEO"></div><div class="fg"><label>Company</label><input type="text" id="b-company" placeholder="Acme Inc."></div></div>
-      <div class="gr2"><div class="fg"><label>Email</label><input type="email" id="b-email" placeholder="jane@acme.com"></div><div class="fg"><label>Phone</label><input type="tel" id="b-phone" placeholder="(312) 555-0100"></div></div>
+      <div class="gr2"><div class="fg"><label>Email <span style="color:#c00">*</span></label><input type="email" id="b-email" placeholder="jane@acme.com"></div><div class="fg"><label>Phone</label><input type="tel" id="b-phone" placeholder="(312) 555-0100"></div></div>
       <div class="gr2">
         <div class="fg"><label>Preferred Contact</label><select id="b-preferredContact"><option>Email</option><option>Phone</option><option>Text</option></select></div>
         <div class="fg"><label>How did you hear about us?</label><select id="b-referralSource"><option value="">-- Select --</option><option>Referral</option><option>LinkedIn</option><option>Google Search</option><option>Other</option></select></div>
       </div>
-      <div class="nav"><button class="btn-back" onclick="backToRoute()">← Back</button><button class="btn-next" onclick="bGo(1)">Next →</button></div>
+      <div id="b-step0-err" style="display:none;color:#c00;font-size:13px;margin-top:8px;padding:8px 12px;background:#fff0f0;border-radius:4px;border:1px solid #ffcccc">Please fill in all required fields before continuing.</div>
+      <div class="nav"><button class="btn-back" onclick="backToRoute()">← Back</button><button class="btn-next" onclick="bValidateStep0()">Next →</button></div>
     </div>
 
     <!-- Step 2: Business -->
@@ -465,6 +467,33 @@ function renderSteps(steps, cur, prefix) {
   });
 }
 
+function pValidateStep0() {
+    const first = document.getElementById('p-firstName').value.trim();
+    const last = document.getElementById('p-lastName').value.trim();
+    const email = document.getElementById('p-email').value.trim();
+    const err = document.getElementById('p-step0-err');
+    if (!first || !last || !email) {
+      err.style.display = 'block';
+      return;
+    }
+    err.style.display = 'none';
+    pGo(1);
+  }
+
+  function bValidateStep0() {
+    const first = document.getElementById('b-firstName').value.trim();
+    const last = document.getElementById('b-lastName').value.trim();
+    const email = document.getElementById('b-email').value.trim();
+    const err = document.getElementById('b-step0-err');
+    if (!first || !last || !email) {
+      err.style.display = 'block';
+      return;
+    }
+    err.style.display = 'none';
+    bGo(1);
+  }
+
+  
 function pGo(n) {
   document.getElementById('p-step' + pCur).classList.remove('active');
   pCur = n;
