@@ -80,19 +80,14 @@
 
 <!-- HEADER -->
 <div class="fh">
-  <!-- Dot mark: diamond, 2 dots, 3 dots -->
   <svg width="32" height="38" viewBox="0 0 32 38" xmlns="http://www.w3.org/2000/svg">
-    <!-- Diamond top -->
     <rect x="12" y="1" width="8" height="8" rx="1" fill="#b07d4a" transform="rotate(45 16 5)"/>
-    <!-- Row 2: 2 dots -->
     <circle cx="10" cy="18" r="3.5" fill="#FAF7F3"/>
     <circle cx="22" cy="18" r="3.5" fill="#FAF7F3"/>
-    <!-- Row 3: 3 dots -->
     <circle cx="4" cy="30" r="3.5" fill="#FAF7F3"/>
     <circle cx="16" cy="30" r="3.5" fill="#FAF7F3"/>
     <circle cx="28" cy="30" r="3.5" fill="#FAF7F3"/>
   </svg>
-  <!-- Wordmark -->
   <div style="display:flex;flex-direction:column;gap:3px;margin-left:10px">
     <svg width="180" height="22" viewBox="0 0 900 110" xmlns="http://www.w3.org/2000/svg">
       <text x="450" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="78" fill="#FAF7F3" letter-spacing="2">R<tspan fill="#b07d4a">.</tspan>A<tspan fill="#b07d4a">.</tspan>M<tspan fill="#b07d4a">.</tspan>O<tspan fill="#b07d4a">.</tspan>T<tspan fill="#b07d4a">.</tspan></text>
@@ -105,7 +100,7 @@
   <p id="header-sub" style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;font-weight:300;font-family:'Jost',sans-serif">New Client Intake</p>
 </div>
 
-<!-- PROGRESS BAR (hidden on route screen) -->
+<!-- PROGRESS BAR -->
 <div class="pbw" id="progress-bar" style="display:none">
   <div class="sis" id="sis"></div>
 </div>
@@ -370,7 +365,17 @@
       <div class="fg"><label>What outcomes are you looking for?</label><textarea id="b-outcomes" placeholder="e.g. Clean books, better cash flow visibility, ready for a capital raise..."></textarea></div>
       <div class="gr2">
         <div class="fg"><label>Target Start Date</label><input type="date" id="b-startDate"></div>
-        <div class="fg"><label>Monthly Budget Range</label><select id="b-budget"><option value="">-- Select --</option><option>Under $1,000/mo</option><option>$1,000 – $2,500/mo</option><option>$2,500 – $5,000/mo</option><option>$5,000+/mo</option><option>Project-based / TBD</option></select></div>
+        <div class="fg"><label>Monthly Budget Range</label>
+          <select id="b-budget">
+            <option value="">-- Select --</option>
+            <option>Under $1,000/mo</option>
+            <option>$1,000 – $2,500/mo</option>
+            <option>$2,500 – $5,000/mo</option>
+            <option>$5,000 – $10,000/mo</option>
+            <option>$10,000+/mo</option>
+            <option>Project-based / TBD</option>
+          </select>
+        </div>
       </div>
       <div class="gr2">
         <div class="fg"><label>Current CPA / Accountant?</label><select id="b-currentCPA"><option value="">-- Select --</option><option>Yes</option><option>No</option></select></div>
@@ -468,32 +473,25 @@ function renderSteps(steps, cur, prefix) {
 }
 
 function pValidateStep0() {
-    const first = document.getElementById('p-firstName').value.trim();
-    const last = document.getElementById('p-lastName').value.trim();
-    const email = document.getElementById('p-email').value.trim();
-    const err = document.getElementById('p-step0-err');
-    if (!first || !last || !email) {
-      err.style.display = 'block';
-      return;
-    }
-    err.style.display = 'none';
-    pGo(1);
-  }
+  const first = document.getElementById('p-firstName').value.trim();
+  const last = document.getElementById('p-lastName').value.trim();
+  const email = document.getElementById('p-email').value.trim();
+  const err = document.getElementById('p-step0-err');
+  if (!first || !last || !email) { err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  pGo(1);
+}
 
-  function bValidateStep0() {
-    const first = document.getElementById('b-firstName').value.trim();
-    const last = document.getElementById('b-lastName').value.trim();
-    const email = document.getElementById('b-email').value.trim();
-    const err = document.getElementById('b-step0-err');
-    if (!first || !last || !email) {
-      err.style.display = 'block';
-      return;
-    }
-    err.style.display = 'none';
-    bGo(1);
-  }
+function bValidateStep0() {
+  const first = document.getElementById('b-firstName').value.trim();
+  const last = document.getElementById('b-lastName').value.trim();
+  const email = document.getElementById('b-email').value.trim();
+  const err = document.getElementById('b-step0-err');
+  if (!first || !last || !email) { err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  bGo(1);
+}
 
-  
 function pGo(n) {
   document.getElementById('p-step' + pCur).classList.remove('active');
   pCur = n;
@@ -520,7 +518,6 @@ async function submitPersonal() {
   const err = document.getElementById('p-submitErr');
   btn.disabled = true; btn.textContent = 'Submitting...'; err.style.display = 'none';
 
-  const incomeSources = getChecked(document.getElementById('p-step1').querySelectorAll('.cb')[0]?.closest('.cbs') || document.querySelector('#p-step1 .cbs'));
   const allCbs = document.querySelectorAll('#p-step1 .cbs');
 
   const data = {
