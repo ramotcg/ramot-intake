@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Onboarding | RAMOT Consulting Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#1a2744;--copper:#b07d4a;--copper-light:#d4a96a;--cream:#f8f4ee;--cream2:#ede7dc;--text-main:#1a2744;--text-muted:#6b7280;--border:rgba(176,125,74,0.25);--green:#2e7d52;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Jost',sans-serif;background:var(--cream);min-height:100vh;color:var(--text-main);}
+
+  /* Header */
+  .fh{background:var(--navy);padding:20px 40px;display:flex;align-items:center;gap:14px;}
+  .ht h1{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#fff;letter-spacing:0.04em;}
+  .ht p{font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;font-weight:300;margin-top:2px;}
+  .divider-v{width:1px;height:32px;background:rgba(255,255,255,0.15);margin:0 20px;}
+
+  /* Progress */
+  .progress-wrap{background:var(--navy);padding:0 40px 20px;}
+  .progress-bar-track{height:3px;background:rgba(255,255,255,0.15);border-radius:2px;margin-top:4px;}
+  .progress-bar-fill{height:3px;background:var(--copper);border-radius:2px;transition:width 0.4s ease;}
+  .progress-label{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:2px;text-transform:uppercase;margin-top:6px;}
+
+  /* Main */
+  .wrap{max-width:700px;margin:0 auto;padding:40px 40px 80px;}
+
+  /* Section */
+  .section{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:28px;}
+  .section-header{padding:16px 24px;background:var(--cream2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .section-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .section-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--navy);}
+  .section-body{padding:24px;}
+
+  /* Questions */
+  .question{margin-bottom:20px;}
+  .question:last-child{margin-bottom:0;}
+  .question label{display:block;font-size:12px;font-weight:500;color:var(--text-main);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:7px;}
+  .question input[type=text],.question textarea,.question select{
+    width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:4px;
+    background:var(--cream);font-family:'Jost',sans-serif;font-size:14px;
+    color:var(--text-main);outline:none;transition:border-color 0.2s;
+  }
+  .question input:focus,.question textarea:focus,.question select:focus{border-color:var(--copper);}
+  .question textarea{resize:vertical;min-height:80px;}
+  .question-hint{font-size:12px;color:var(--text-muted);margin-top:5px;font-style:italic;}
+
+  /* Radio/checkbox groups */
+  .radio-group,.check-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .radio-opt,.check-opt{display:flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:13px;background:#fff;transition:all 0.15s;user-select:none;}
+  .radio-opt:hover,.check-opt:hover{border-color:var(--copper-light);}
+  .radio-opt.selected,.check-opt.selected{border-color:var(--copper);background:rgba(176,125,74,0.06);}
+  .radio-opt input,.check-opt input{accent-color:var(--copper);width:14px;height:14px;}
+
+  /* Submit */
+  .submit-wrap{text-align:center;padding:40px 0 0;}
+  .btn-submit{padding:14px 48px;border:none;border-radius:4px;background:var(--copper);font-family:'Jost',sans-serif;font-size:14px;letter-spacing:0.04em;color:#fff;cursor:pointer;transition:background 0.2s;}
+  .btn-submit:hover{background:#9a6d3e;}
+  .btn-submit:disabled{background:#ccc;cursor:not-allowed;}
+
+  /* Success */
+  .success{display:none;text-align:center;padding:80px 40px;max-width:520px;margin:0 auto;}
+  .success.active{display:block;}
+  .check-circle{width:64px;height:64px;border-radius:50%;background:rgba(176,125,74,0.1);border:2px solid var(--copper);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:26px;color:var(--copper);}
+  .success h2{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--navy);margin-bottom:14px;}
+  .success p{font-size:15px;color:var(--text-muted);font-weight:300;line-height:1.8;}
+
+  /* Error */
+  .err{display:none;background:#fff0f0;border:1px solid #ffcccc;color:#c00;padding:10px 14px;border-radius:4px;font-size:13px;margin-top:16px;}
+
+  @media(max-width:600px){.wrap{padding:24px 20px;}.fh{padding:16px 20px;}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="fh">
+  <svg width="32" height="38" viewBox="0 0 32 38" xmlns="http://www.w3.org/2000/svg">
+    <rect x="12" y="1" width="8" height="8" rx="1" fill="#b07d4a" transform="rotate(45 16 5)"/>
+    <circle cx="10" cy="18" r="3.5" fill="#FAF7F3"/>
+    <circle cx="22" cy="18" r="3.5" fill="#FAF7F3"/>
+    <circle cx="4" cy="30" r="3.5" fill="#FAF7F3"/>
+    <circle cx="16" cy="30" r="3.5" fill="#FAF7F3"/>
+    <circle cx="28" cy="30" r="3.5" fill="#FAF7F3"/>
+  </svg>
+  <div style="margin-left:10px;">
+    <svg width="180" height="22" viewBox="0 0 900 110" xmlns="http://www.w3.org/2000/svg">
+      <text x="450" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="78" fill="#FAF7F3" letter-spacing="2">R<tspan fill="#b07d4a">.</tspan>A<tspan fill="#b07d4a">.</tspan>M<tspan fill="#b07d4a">.</tspan>O<tspan fill="#b07d4a">.</tspan>T<tspan fill="#b07d4a">.</tspan></text>
+    </svg>
+    <svg width="180" height="14" viewBox="0 0 900 50" xmlns="http://www.w3.org/2000/svg">
+      <text x="450" y="36" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#85B7EB" letter-spacing="7">CONSULTING GROUP</text>
+    </svg>
+  </div>
+  <div class="divider-v"></div>
+  <div class="ht">
+    <h1>Client Onboarding</h1>
+    <p id="client-name-header">Welcome</p>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="progress-label" id="progress-label">Getting started...</div>
+</div>
+
+<!-- FORM -->
+<div class="wrap" id="form-wrap" style="display:none;">
+  <div id="sections-container"></div>
+  <div class="submit-wrap">
+    <div class="err" id="submit-err">Something went wrong. Please try again or email us at info@ramotconsultinggroup.com.</div>
+    <button class="btn-submit" id="submit-btn" onclick="submitOnboarding()">Submit Onboarding Form →</button>
+  </div>
+</div>
+
+<!-- ERROR STATE -->
+<div class="wrap" id="error-wrap" style="display:none;">
+  <div style="text-align:center;padding:80px 0;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--navy);margin-bottom:12px;">Invalid or expired link</div>
+    <p style="font-size:14px;color:var(--text-muted);">This onboarding link is invalid. Please contact your RAMOT advisor for a new link.</p>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success" id="success-wrap">
+  <div class="check-circle">✓</div>
+  <h2>Thank you!</h2>
+  <p>We've received your onboarding information and will be in touch shortly to schedule your kickoff call.<br><br>We're looking forward to working with you.</p>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCClczaoK-2WZnlKktYivyUsatBqEyjY1fX0DX8DKneTjuWs4r7uesP-hAdrMGD57I/exec';
+
+let formData = null;
+let answers = {};
+
+const SECTION_ICONS = {
+  core: '🏢',
+  accounting: '📚',
+  strategic: '📈',
+  transaction: '🤝',
+};
+
+window.onload = function() {
+  const params = new URLSearchParams(window.location.search);
+  const encoded = params.get('data');
+  if (!encoded) { showError(); return; }
+
+  try {
+    formData = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+  } catch(e) { showError(); return; }
+
+  // Update header
+  document.getElementById('client-name-header').textContent = formData.client || 'Welcome';
+  document.title = `Onboarding — ${formData.client} | RAMOT Consulting Group`;
+
+  buildForm();
+  document.getElementById('form-wrap').style.display = 'block';
+  updateProgress();
+};
+
+function showError() {
+  document.getElementById('error-wrap').style.display = 'block';
+}
+
+function buildForm() {
+  const container = document.getElementById('sections-container');
+  const sections = formData.sections;
+  let sectionNum = 0;
+
+  const sectionOrder = ['core','accounting','strategic','transaction'];
+  sectionOrder.forEach(key => {
+    if (!sections[key] || sections[key].length === 0) return;
+    sectionNum++;
+    const questions = sections[key];
+    const sectionEl = document.createElement('div');
+    sectionEl.className = 'section';
+    sectionEl.id = `section-${key}`;
+
+    const titles = {
+      core: 'Business & Engagement Setup',
+      accounting: 'Accounting & Compliance',
+      strategic: 'Strategic Finance',
+      transaction: 'Transaction Advisory',
+    };
+
+    sectionEl.innerHTML = `
+      <div class="section-header">
+        <div class="section-num">${sectionNum}</div>
+        <div class="section-title">${titles[key] || key}</div>
+      </div>
+      <div class="section-body" id="body-${key}"></div>`;
+
+    container.appendChild(sectionEl);
+
+    const body = document.getElementById(`body-${key}`);
+    questions.forEach((q, i) => {
+      const qId = `q-${key}-${i}`;
+      answers[qId] = '';
+
+      const div = document.createElement('div');
+      div.className = 'question';
+      div.innerHTML = `
+        <label for="${qId}">${q}</label>
+        <textarea id="${qId}" rows="2" placeholder="Your answer..." oninput="answers['${qId}']=this.value;updateProgress()"></textarea>`;
+      body.appendChild(div);
+    });
+  });
+}
+
+function updateProgress() {
+  const total = Object.keys(answers).length;
+  const filled = Object.values(answers).filter(v => v.trim().length > 0).length;
+  const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${filled} of ${total} questions answered`;
+}
+
+async function submitOnboarding() {
+  const btn = document.getElementById('submit-btn');
+  const err = document.getElementById('submit-err');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  err.style.display = 'none';
+
+  // Build readable response object
+  const responses = {};
+  const sections = formData.sections;
+  const sectionOrder = ['core','accounting','strategic','transaction'];
+
+  sectionOrder.forEach(key => {
+    if (!sections[key]) return;
+    sections[key].forEach((q, i) => {
+      const qId = `q-${key}-${i}`;
+      responses[q] = answers[qId] || '';
+    });
+  });
+
+  const payload = {
+    formType: 'onboarding',
+    client: formData.client,
+    contact: formData.contact,
+    responses,
+  };
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    document.getElementById('form-wrap').style.display = 'none';
+    document.getElementById('progress-wrap') && (document.querySelector('.progress-wrap').style.display = 'none');
+    document.getElementById('success-wrap').classList.add('active');
+    window.scrollTo(0, 0);
+  } catch(e) {
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit Onboarding Form →';
+  }
+}
+</script>
+</body>
+</html>
