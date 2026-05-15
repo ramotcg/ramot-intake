@@ -147,8 +147,15 @@ window.onload = function() {
   if (!encoded) { showError(); return; }
 
   try {
-    formData = JSON.parse(decodeURIComponent(escape(atob(encoded))));
-  } catch(e) { showError(); return; }
+    // Decode URL-safe base64
+    const b64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = b64 + '=='.slice(0, (4 - b64.length % 4) % 4);
+    const binary = atob(padded);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const jsonStr = new TextDecoder().decode(bytes);
+    formData = JSON.parse(jsonStr);
+  } catch(e) { console.error('Decode error:', e); showError(); return; }
 
   // Update header
   document.getElementById('client-name-header').textContent = formData.client || 'Welcome';
