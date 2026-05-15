@@ -93,7 +93,7 @@
   </div>
   <div class="divider-v"></div>
   <div class="ht">
-    <h1>Client Onboarding</h1>
+    <h1 id="onboarding-type-header">Client Onboarding</h1>
     <p id="client-name-header">Welcome</p>
   </div>
 </div>
@@ -159,6 +159,7 @@ window.onload = function() {
 
   // Update header
   document.getElementById('client-name-header').textContent = formData.client || 'Welcome';
+  document.getElementById('onboarding-type-header').textContent = formData.onboardingType === 'personal' ? 'Personal Tax Onboarding' : 'Business Onboarding';
   document.title = `Onboarding — ${formData.client} | RAMOT Consulting Group`;
 
   buildForm();
@@ -247,6 +248,7 @@ async function submitOnboarding() {
     formType: 'onboarding',
     client: formData.client,
     contact: formData.contact,
+    onboardingType: formData.onboardingType || 'business',
     responses,
   };
 
