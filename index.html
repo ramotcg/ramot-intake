@@ -474,7 +474,40 @@ async function submitBusiness() {
     notes: document.getElementById('b-notes').value
   };
   try {
-    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    // Apps Script — email notification + Drive folder
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+
+    // Portal database — direct API call
+    fetch('https://portal.ramotconsultinggroup.com/clients', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': 'rmp-8x4k-2026-rcg' },
+      body: JSON.stringify({
+        company:            data.company || data.legalName || (data.firstName + ' ' + data.lastName),
+        contact:            (data.firstName + ' ' + data.lastName).trim(),
+        email:              data.email,
+        phone:              data.phone,
+        title:              data.title,
+        industry:           data.industry,
+        entity_type:        data.entityType,
+        revenue:            data.revenue,
+        employees:          data.employees,
+        software:           data.software,
+        books_current:      data.booksCurrent,
+        services:           data.services,
+        complexity_factors: data.complexityFactors,
+        driving_need:       data.drivingNeed,
+        outcomes:           data.outcomes,
+        budget:             data.budget,
+        billing_type:       'retainer',
+        billing_amt:        '',
+        status:             'prospect',
+        start_date:         data.startDate,
+        referral_source:    data.referralSource,
+        description:        data.description,
+        notes:              data.notes
+      })
+    }).catch(() => {});
+
     document.getElementById('business-form').style.display = 'none';
     document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('success').classList.add('active');
