@@ -399,6 +399,7 @@ async function submitPersonal() {
   btn.disabled = true; btn.textContent = 'Submitting...'; err.style.display = 'none';
   const allCbs = document.querySelectorAll('#p-step1 .cbs');
   const data = {
+    secret: 'ramot-intake-rcg-2026',
     formType: 'personal-tax',
     firstName: document.getElementById('p-firstName').value,
     lastName: document.getElementById('p-lastName').value,
@@ -419,12 +420,17 @@ async function submitPersonal() {
     notes: document.getElementById('p-notes').value
   };
   try {
-    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    const res = await fetch(SCRIPT_URL, { method: 'POST', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(data) });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'Submission failed');
     document.getElementById('personal-form').style.display = 'none';
     document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('success').classList.add('active');
     window.scrollTo(0, 0);
   } catch(e) {
+    err.textContent = e.message && e.message !== 'Failed to fetch'
+      ? e.message
+      : 'Something went wrong. Please try again or email us at info@ramotconsultinggroup.com.';
     err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Submit →';
   }
 }
@@ -436,6 +442,7 @@ async function submitBusiness() {
   const serviceCbs = document.querySelectorAll('#b-step2 input[type=checkbox]');
   const complexityCbs = document.querySelectorAll('#b-step3 input[type=checkbox]');
   const data = {
+    secret: 'ramot-intake-rcg-2026',
     formType: 'intake',
     firstName: document.getElementById('b-firstName').value,
     lastName: document.getElementById('b-lastName').value,
@@ -474,45 +481,17 @@ async function submitBusiness() {
     notes: document.getElementById('b-notes').value
   };
   try {
-    // Apps Script — email notification + Drive folder
-    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
-
-    // Portal database — direct API call
-    fetch('https://portal.ramotconsultinggroup.com/clients', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': 'rmp-8x4k-2026-rcg' },
-      body: JSON.stringify({
-        company:            data.company || data.legalName || (data.firstName + ' ' + data.lastName),
-        contact:            (data.firstName + ' ' + data.lastName).trim(),
-        email:              data.email,
-        phone:              data.phone,
-        title:              data.title,
-        industry:           data.industry,
-        entity_type:        data.entityType,
-        revenue:            data.revenue,
-        employees:          data.employees,
-        software:           data.software,
-        books_current:      data.booksCurrent,
-        services:           data.services,
-        complexity_factors: data.complexityFactors,
-        driving_need:       data.drivingNeed,
-        outcomes:           data.outcomes,
-        budget:             data.budget,
-        billing_type:       'retainer',
-        billing_amt:        '',
-        status:             'prospect',
-        start_date:         data.startDate,
-        referral_source:    data.referralSource,
-        description:        data.description,
-        notes:              data.notes
-      })
-    }).catch(() => {});
-
+    const res = await fetch(SCRIPT_URL, { method: 'POST', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(data) });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'Submission failed');
     document.getElementById('business-form').style.display = 'none';
     document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('success').classList.add('active');
     window.scrollTo(0, 0);
   } catch(e) {
+    err.textContent = e.message && e.message !== 'Failed to fetch'
+      ? e.message
+      : 'Something went wrong. Please try again or email us at info@ramotconsultinggroup.com.';
     err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Submit →';
   }
 }
