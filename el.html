@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engagement Letter | RAMOT Consulting Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#1a2744;--copper:#b07d4a;--copper-light:#d4a96a;--cream:#f8f4ee;--cream2:#ede7dc;--text-main:#1a2744;--text-muted:#6b7280;--border:rgba(176,125,74,0.25);--green:#2e7d52;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Jost',sans-serif;background:var(--cream);min-height:100vh;color:var(--text-main);}
+
+  /* Header */
+  .fh{background:var(--navy);padding:20px 40px;display:flex;align-items:center;gap:14px;}
+  .ht h1{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#fff;letter-spacing:0.04em;}
+  .ht p{font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;font-weight:300;margin-top:2px;}
+  .divider-v{width:1px;height:32px;background:rgba(255,255,255,0.15);margin:0 20px;}
+
+  /* Main */
+  .wrap{max-width:780px;margin:0 auto;padding:40px 40px 80px;}
+
+  /* Letter card */
+  .letter-card{
+    background:#fff;border:1px solid var(--border);border-radius:6px;
+    padding:56px 64px;margin-bottom:28px;
+    font-family:'Georgia',serif;font-size:13px;line-height:1.85;color:#111;
+  }
+  .letter-card h1{font-size:26px;font-weight:700;color:var(--navy);letter-spacing:2px;font-family:'Cormorant Garamond',serif;}
+  .letter-card .el-sub{font-size:11px;letter-spacing:3px;color:var(--copper);margin-bottom:4px;}
+  .letter-card hr{border:none;border-bottom:2px solid var(--copper);margin:12px 0 20px;}
+  .letter-card h2{font-size:13px;font-weight:700;text-decoration:underline;color:var(--navy);margin:20px 0 6px;}
+  .letter-card p{margin-bottom:9px;}
+  .letter-card ul{margin:4px 0 9px 18px;}
+  .letter-card li{margin-bottom:3px;}
+
+  /* Signature card */
+  .sign-card{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+  .sign-card-header{padding:16px 24px;background:var(--cream2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .sign-card-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .sign-card-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--navy);}
+  .sign-card-body{padding:28px;}
+  .sign-intro{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:24px;}
+
+  /* Form fields */
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:11px;font-weight:500;color:var(--text-main);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+  .field input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:4px;background:var(--cream);font-family:'Jost',sans-serif;font-size:14px;color:var(--text-main);outline:none;transition:border-color 0.2s;}
+  .field input:focus{border-color:var(--copper);}
+  .field input[readonly]{color:var(--text-muted);cursor:default;}
+
+  .fields-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+  /* Agree checkbox */
+  .agree-wrap{display:flex;align-items:flex-start;gap:12px;padding:16px;background:var(--cream2);border:1px solid var(--border);border-radius:4px;margin:24px 0;}
+  .agree-wrap input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--copper);cursor:pointer;}
+  .agree-wrap label{font-size:13px;color:var(--navy);line-height:1.6;cursor:pointer;}
+
+  /* Signature preview */
+  .sig-preview{display:none;margin:16px 0;padding:16px 20px;border:1px solid var(--border);border-radius:4px;background:#fff;}
+  .sig-preview.show{display:block;}
+  .sig-name{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--navy);font-style:italic;border-bottom:1px solid var(--navy);padding-bottom:4px;display:inline-block;}
+  .sig-meta{font-size:11px;color:var(--text-muted);margin-top:8px;letter-spacing:0.04em;}
+
+  /* Submit */
+  .submit-wrap{margin-top:24px;}
+  .btn-submit{padding:14px 48px;border:none;border-radius:4px;background:var(--copper);font-family:'Jost',sans-serif;font-size:14px;letter-spacing:0.04em;color:#fff;cursor:pointer;transition:background 0.2s;}
+  .btn-submit:hover{background:#9a6d3e;}
+  .btn-submit:disabled{background:#ccc;cursor:not-allowed;}
+
+  /* Error */
+  .err{display:none;background:#fff0f0;border:1px solid #ffcccc;color:#c00;padding:10px 14px;border-radius:4px;font-size:13px;margin-top:14px;}
+
+  /* States */
+  .state{display:none;text-align:center;padding:80px 40px;max-width:520px;margin:0 auto;}
+  .state.active{display:block;}
+  .state-icon{width:64px;height:64px;border-radius:50%;background:rgba(176,125,74,0.1);border:2px solid var(--copper);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:26px;color:var(--copper);}
+  .state h2{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--navy);margin-bottom:14px;}
+  .state p{font-size:15px;color:var(--text-muted);font-weight:300;line-height:1.8;}
+
+  @media(max-width:600px){
+    .wrap{padding:24px 16px;}
+    .letter-card{padding:32px 24px;}
+    .fields-row{grid-template-columns:1fr;}
+    .fh{padding:16px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="fh">
+  <svg width="32" height="38" viewBox="0 0 32 38" xmlns="http://www.w3.org/2000/svg">
+    <rect x="12" y="1" width="8" height="8" rx="1" fill="#b07d4a" transform="rotate(45 16 5)"/>
+    <circle cx="10" cy="18" r="3.5" fill="#FAF7F3"/>
+    <circle cx="22" cy="18" r="3.5" fill="#FAF7F3"/>
+    <circle cx="4" cy="30" r="3.5" fill="#FAF7F3"/>
+    <circle cx="16" cy="30" r="3.5" fill="#FAF7F3"/>
+    <circle cx="28" cy="30" r="3.5" fill="#FAF7F3"/>
+  </svg>
+  <div style="margin-left:10px;">
+    <svg width="180" height="22" viewBox="0 0 900 110" xmlns="http://www.w3.org/2000/svg">
+      <text x="450" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="78" fill="#FAF7F3" letter-spacing="2">R<tspan fill="#b07d4a">.</tspan>A<tspan fill="#b07d4a">.</tspan>M<tspan fill="#b07d4a">.</tspan>O<tspan fill="#b07d4a">.</tspan>T<tspan fill="#b07d4a">.</tspan></text>
+    </svg>
+    <svg width="180" height="14" viewBox="0 0 900 50" xmlns="http://www.w3.org/2000/svg">
+      <text x="450" y="36" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#85B7EB" letter-spacing="7">CONSULTING GROUP</text>
+    </svg>
+  </div>
+  <div class="divider-v"></div>
+  <div class="ht">
+    <h1>Engagement Letter</h1>
+    <p id="client-name-header">Review &amp; Sign</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="wrap" id="main-wrap" style="display:none;">
+  <!-- Letter -->
+  <div class="letter-card" id="letter-content"></div>
+
+  <!-- Signature section -->
+  <div class="sign-card">
+    <div class="sign-card-header">
+      <div class="sign-card-num">✦</div>
+      <div class="sign-card-title">Sign this Agreement</div>
+    </div>
+    <div class="sign-card-body">
+      <p class="sign-intro">By signing below, you confirm that you have read and agree to the terms set forth in this Engagement Letter, including Exhibit A (Terms and Conditions) and Exhibit B (Scope of Work).</p>
+
+      <div class="fields-row">
+        <div class="field">
+          <label>Full Legal Name *</label>
+          <input type="text" id="sign-name" placeholder="Your full name" oninput="updateSigPreview()">
+        </div>
+        <div class="field">
+          <label>Title</label>
+          <input type="text" id="sign-title" placeholder="e.g. CEO, Managing Member">
+        </div>
+      </div>
+      <div class="field" style="max-width:240px;">
+        <label>Date</label>
+        <input type="text" id="sign-date" readonly>
+      </div>
+
+      <!-- Live signature preview -->
+      <div class="sig-preview" id="sig-preview">
+        <div class="sig-name" id="sig-name-display"></div>
+        <div class="sig-meta" id="sig-meta-display"></div>
+      </div>
+
+      <div class="agree-wrap">
+        <input type="checkbox" id="sign-agree">
+        <label for="sign-agree">I have read and agree to the terms of this Engagement Letter, including all Exhibits. I understand this constitutes a legally binding agreement.</label>
+      </div>
+
+      <div class="submit-wrap">
+        <button class="btn-submit" id="sign-btn" onclick="submitSignature()">Sign Engagement Letter →</button>
+        <div class="err" id="sign-err"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ALREADY SIGNED -->
+<div class="state" id="state-signed">
+  <div class="state-icon">✓</div>
+  <h2>Already Signed</h2>
+  <p id="state-signed-msg">This engagement letter has already been signed.</p>
+</div>
+
+<!-- ERROR -->
+<div class="state" id="state-error">
+  <div class="state-icon" style="color:#c00;border-color:#c00;background:rgba(192,0,0,0.06);">✕</div>
+  <h2>Link Invalid</h2>
+  <p>This signing link is invalid or has expired. Please contact your RAMOT advisor for a new link.</p>
+</div>
+
+<!-- SUCCESS -->
+<div class="state" id="state-success">
+  <div class="state-icon">✓</div>
+  <h2>Signed — Thank you!</h2>
+  <p>Your engagement letter has been signed and recorded. We'll be in touch shortly to get started.<br><br>We're looking forward to working with you.</p>
+</div>
+
+<script>
+const API_URL = 'https://portal.ramotconsultinggroup.com';
+let elToken = null;
+
+window.onload = function() {
+  const params = new URLSearchParams(window.location.search);
+  elToken = params.get('token');
+  if (!elToken) { showState('error'); return; }
+
+  fetch(`${API_URL}/el/${elToken}`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.error === 'already_signed') {
+        const d = new Date(data.signed_at).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+        document.getElementById('state-signed-msg').textContent =
+          `This engagement letter was signed by ${data.signed_name} on ${d}.`;
+        showState('signed');
+        return;
+      }
+      if (data.error) { showState('error'); return; }
+
+      document.getElementById('client-name-header').textContent = data.company || 'Review & Sign';
+      document.title = `Engagement Letter — ${data.company || ''} | RAMOT Consulting Group`;
+      document.getElementById('letter-content').innerHTML = data.htmlContent || '';
+      document.getElementById('sign-date').value = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+      document.getElementById('main-wrap').style.display = 'block';
+    })
+    .catch(() => showState('error'));
+};
+
+function showState(name) {
+  document.getElementById('main-wrap').style.display = 'none';
+  ['signed','error','success'].forEach(s => {
+    document.getElementById('state-' + s).classList.toggle('active', s === name);
+  });
+}
+
+function updateSigPreview() {
+  const name = document.getElementById('sign-name').value.trim();
+  const title = document.getElementById('sign-title').value.trim();
+  const date = document.getElementById('sign-date').value;
+  const preview = document.getElementById('sig-preview');
+  if (name) {
+    document.getElementById('sig-name-display').textContent = name;
+    document.getElementById('sig-meta-display').textContent =
+      [title, date].filter(Boolean).join(' · ');
+    preview.classList.add('show');
+  } else {
+    preview.classList.remove('show');
+  }
+}
+
+async function submitSignature() {
+  const name  = document.getElementById('sign-name').value.trim();
+  const title = document.getElementById('sign-title').value.trim();
+  const agree = document.getElementById('sign-agree').checked;
+  const btn   = document.getElementById('sign-btn');
+  const err   = document.getElementById('sign-err');
+
+  err.style.display = 'none';
+
+  if (!name)  { showErr('Please enter your full legal name.'); return; }
+  if (!agree) { showErr('Please check the agreement box to proceed.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Signing…';
+
+  try {
+    const res  = await fetch(`${API_URL}/el/${elToken}/sign`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ name, title }),
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'Signing failed.');
+    showState('success');
+    window.scrollTo(0, 0);
+  } catch(e) {
+    showErr(e.message || 'Something went wrong. Please try again or contact us at info@ramotconsultinggroup.com.');
+    btn.disabled = false;
+    btn.textContent = 'Sign Engagement Letter →';
+  }
+}
+
+function showErr(msg) {
+  const err = document.getElementById('sign-err');
+  err.textContent = msg;
+  err.style.display = 'block';
+}
+</script>
+</body>
+</html>
