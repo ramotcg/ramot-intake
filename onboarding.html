@@ -359,6 +359,8 @@ async function submitOnboarding() {
   const payload = {
     secret: 'ramot-intake-rcg-2026',
     formType: 'onboarding',
+    clientId: formData.clientId || '',
+    driveFolderId: formData.driveFolderId || '',
     client: formData.client,
     contact: formData.contact,
     email: formData.email || '',
