@@ -33,7 +33,7 @@
   .section-body{padding:24px;}
 
   /* Questions */
-  .question{margin-bottom:20px;}
+  .question{margin-bottom:22px;}
   .question:last-child{margin-bottom:0;}
   .question label{display:block;font-size:12px;font-weight:500;color:var(--text-main);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:7px;}
   .question input[type=text],.question textarea,.question select{
@@ -45,12 +45,21 @@
   .question textarea{resize:vertical;min-height:80px;}
   .question-hint{font-size:12px;color:var(--text-muted);margin-top:5px;font-style:italic;}
 
-  /* Radio/checkbox groups */
-  .radio-group,.check-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
-  .radio-opt,.check-opt{display:flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:13px;background:#fff;transition:all 0.15s;user-select:none;}
-  .radio-opt:hover,.check-opt:hover{border-color:var(--copper-light);}
-  .radio-opt.selected,.check-opt.selected{border-color:var(--copper);background:rgba(176,125,74,0.06);}
-  .radio-opt input,.check-opt input{accent-color:var(--copper);width:14px;height:14px;}
+  /* Yes/No */
+  .yesno-group{display:flex;gap:8px;margin-top:4px;}
+  .yn-btn{padding:8px 28px;border:1px solid var(--border);border-radius:4px;cursor:pointer;
+    font-size:13px;font-family:'Jost',sans-serif;background:#fff;transition:all 0.15s;color:var(--text-main);}
+  .yn-btn:hover{border-color:var(--copper-light);}
+  .yn-btn.selected{border-color:var(--copper);background:rgba(176,125,74,0.08);font-weight:500;}
+  .yn-detail{margin-top:10px;display:none;}
+  .yn-detail.show{display:block;}
+
+  /* Multi / Checkbox */
+  .multi-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .multi-opt{padding:7px 16px;border:1px solid var(--border);border-radius:4px;cursor:pointer;
+    font-size:13px;background:#fff;transition:all 0.15s;user-select:none;color:var(--text-main);}
+  .multi-opt:hover{border-color:var(--copper-light);}
+  .multi-opt.selected{border-color:var(--copper);background:rgba(176,125,74,0.08);}
 
   /* Submit */
   .submit-wrap{text-align:center;padding:40px 0 0;}
@@ -132,14 +141,10 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDH5y_lK85lOAcEKbQWRj9pakRg_lW9a5G_n_325OtXl50rLF-bRPKEpgW6GRZZb-x/exec';
 
 let formData = null;
+// answers keyed by qId: string (text/dropdown/yesno) or array (multi/checkbox)
 let answers = {};
-
-const SECTION_ICONS = {
-  core: '🏢',
-  accounting: '📚',
-  strategic: '📈',
-  transaction: '🤝',
-};
+// store qObj per qId so submitOnboarding knows the type
+let questionMeta = {};
 
 window.onload = function() {
   const params = new URLSearchParams(window.location.search);
@@ -147,7 +152,6 @@ window.onload = function() {
   if (!encoded) { showError(); return; }
 
   try {
-    // Decode URL-safe base64
     const b64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
     const padded = b64 + '=='.slice(0, (4 - b64.length % 4) % 4);
     const binary = atob(padded);
@@ -157,7 +161,6 @@ window.onload = function() {
     formData = JSON.parse(jsonStr);
   } catch(e) { console.error('Decode error:', e); showError(); return; }
 
-  // Update header
   document.getElementById('client-name-header').textContent = formData.client || 'Welcome';
   document.getElementById('onboarding-type-header').textContent = formData.onboardingType === 'personal' ? 'Personal Tax Onboarding' : 'Business Onboarding';
   document.title = `Onboarding — ${formData.client} | RAMOT Consulting Group`;
@@ -176,7 +179,21 @@ function buildForm() {
   const sections = formData.sections;
   let sectionNum = 0;
 
-  const sectionOrder = ['core','accounting','strategic','transaction'];
+  const sectionOrder = ['core','accounting','strategic','transaction',
+    'personal_info','personal_dependents','personal_income','personal_deductions','personal_other'];
+
+  const titles = {
+    core: 'Business & Engagement Setup',
+    accounting: 'Accounting & Compliance',
+    strategic: 'Strategic Finance',
+    transaction: 'Transaction Advisory',
+    personal_info: 'Personal Information',
+    personal_dependents: 'Dependents',
+    personal_income: 'Income',
+    personal_deductions: 'Deductions & Credits',
+    personal_other: 'Other',
+  };
+
   sectionOrder.forEach(key => {
     if (!sections[key] || sections[key].length === 0) return;
     sectionNum++;
@@ -185,40 +202,125 @@ function buildForm() {
     sectionEl.className = 'section';
     sectionEl.id = `section-${key}`;
 
-    const titles = {
-      core: 'Business & Engagement Setup',
-      accounting: 'Accounting & Compliance',
-      strategic: 'Strategic Finance',
-      transaction: 'Transaction Advisory',
-    };
-
     sectionEl.innerHTML = `
       <div class="section-header">
         <div class="section-num">${sectionNum}</div>
         <div class="section-title">${titles[key] || key}</div>
       </div>
       <div class="section-body" id="body-${key}"></div>`;
-
     container.appendChild(sectionEl);
 
     const body = document.getElementById(`body-${key}`);
-    questions.forEach((q, i) => {
+    questions.forEach((qRaw, i) => {
+      const qObj = typeof qRaw === 'string' ? { q: qRaw, type: 'text' } : qRaw;
       const qId = `q-${key}-${i}`;
-      answers[qId] = '';
+      questionMeta[qId] = qObj;
+      const type = qObj.type || 'text';
+
+      // Initial answer state
+      if (type === 'multi' || type === 'checkbox') {
+        answers[qId] = [];
+      } else {
+        answers[qId] = '';
+      }
 
       const div = document.createElement('div');
       div.className = 'question';
-      div.innerHTML = `
-        <label for="${qId}">${q}</label>
-        <textarea id="${qId}" rows="2" placeholder="Your answer..." oninput="answers['${qId}']=this.value;updateProgress()"></textarea>`;
+
+      let inputHTML = '';
+
+      if (type === 'dropdown') {
+        const opts = (qObj.opts || []).map(o =>
+          `<option value="${escHtml(o)}">${escHtml(o)}</option>`
+        ).join('');
+        inputHTML = `<select id="${qId}" onchange="answers['${qId}']=this.value;updateProgress()">
+          <option value="">— Select —</option>
+          ${opts}
+        </select>`;
+
+      } else if (type === 'yesno') {
+        const detailId = `${qId}-detail`;
+        const detailBlock = qObj.detail
+          ? `<div class="yn-detail" id="${detailId}">
+               <textarea id="${qId}-txt" rows="2" placeholder="${escHtml(qObj.hint || 'Please provide details...')}"
+                 style="margin-top:0;"
+                 oninput="updateYesNoDetail('${qId}')"></textarea>
+             </div>`
+          : '';
+        inputHTML = `
+          <div class="yesno-group">
+            <button type="button" class="yn-btn" id="${qId}-yes" onclick="setYesNo('${qId}','Yes')">Yes</button>
+            <button type="button" class="yn-btn" id="${qId}-no"  onclick="setYesNo('${qId}','No')">No</button>
+          </div>
+          ${detailBlock}`;
+
+      } else if (type === 'multi' || type === 'checkbox') {
+        const opts = (qObj.opts || []).map(o =>
+          `<div class="multi-opt" data-val="${escHtml(o)}" onclick="toggleMulti('${qId}',this)">${escHtml(o)}</div>`
+        ).join('');
+        inputHTML = `<div class="multi-group" id="${qId}-group">${opts}</div>`;
+
+      } else {
+        // text / fallback
+        inputHTML = `<textarea id="${qId}" rows="2" placeholder="Your answer..."
+          oninput="answers['${qId}']=this.value;updateProgress()"></textarea>`;
+      }
+
+      const hintHTML = qObj.hint && type !== 'yesno'
+        ? `<div class="question-hint">${escHtml(qObj.hint)}</div>` : '';
+
+      div.innerHTML = `<label>${escHtml(qObj.q)}</label>${inputHTML}${hintHTML}`;
       body.appendChild(div);
     });
   });
 }
 
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function setYesNo(qId, val) {
+  answers[qId] = val;
+  document.getElementById(`${qId}-yes`).classList.toggle('selected', val === 'Yes');
+  document.getElementById(`${qId}-no`).classList.toggle('selected', val === 'No');
+  const detailEl = document.getElementById(`${qId}-detail`);
+  if (detailEl) {
+    if (val === 'Yes') {
+      detailEl.classList.add('show');
+    } else {
+      detailEl.classList.remove('show');
+      // clear detail text when switching to No
+      const txt = document.getElementById(`${qId}-txt`);
+      if (txt) txt.value = '';
+    }
+  }
+  updateProgress();
+}
+
+function updateYesNoDetail(qId) {
+  const txt = document.getElementById(`${qId}-txt`);
+  if (!txt) return;
+  const base = answers[qId] ? answers[qId].split(' — ')[0] : 'Yes';
+  answers[qId] = txt.value.trim() ? `${base} — ${txt.value.trim()}` : base;
+}
+
+function toggleMulti(qId, el) {
+  const val = el.dataset.val;
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    if (!answers[qId].includes(val)) answers[qId].push(val);
+  } else {
+    answers[qId] = answers[qId].filter(v => v !== val);
+  }
+  updateProgress();
+}
+
 function updateProgress() {
   const total = Object.keys(answers).length;
-  const filled = Object.values(answers).filter(v => v.trim().length > 0).length;
+  const filled = Object.values(answers).filter(v =>
+    Array.isArray(v) ? v.length > 0 : String(v).trim().length > 0
+  ).length;
   const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-label').textContent = `${filled} of ${total} questions answered`;
@@ -231,16 +333,26 @@ async function submitOnboarding() {
   btn.textContent = 'Submitting...';
   err.style.display = 'none';
 
-  // Build readable response object
   const responses = {};
   const sections = formData.sections;
-  const sectionOrder = ['core','accounting','strategic','transaction'];
+  const sectionOrder = ['core','accounting','strategic','transaction',
+    'personal_info','personal_dependents','personal_income','personal_deductions','personal_other'];
 
   sectionOrder.forEach(key => {
     if (!sections[key]) return;
-    sections[key].forEach((q, i) => {
+    sections[key].forEach((qRaw, i) => {
+      const qObj = typeof qRaw === 'string' ? { q: qRaw, type: 'text' } : qRaw;
       const qId = `q-${key}-${i}`;
-      responses[q] = answers[qId] || '';
+      const val = answers[qId];
+      const type = qObj.type || 'text';
+
+      let displayVal;
+      if (type === 'multi' || type === 'checkbox') {
+        displayVal = Array.isArray(val) && val.length ? val.join(', ') : '';
+      } else {
+        displayVal = val || '';
+      }
+      responses[qObj.q] = displayVal;
     });
   });
 
