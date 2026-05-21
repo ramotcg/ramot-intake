@@ -129,7 +129,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCClczaoK-2WZnlKktYivyUsatBqEyjY1fX0DX8DKneTjuWs4r7uesP-hAdrMGD57I/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDH5y_lK85lOAcEKbQWRj9pakRg_lW9a5G_n_325OtXl50rLF-bRPKEpgW6GRZZb-x/exec';
 
 let formData = null;
 let answers = {};
@@ -245,25 +245,31 @@ async function submitOnboarding() {
   });
 
   const payload = {
+    secret: 'ramot-intake-rcg-2026',
     formType: 'onboarding',
     client: formData.client,
     contact: formData.contact,
+    email: formData.email || '',
     onboardingType: formData.onboardingType || 'business',
     responses,
   };
 
   try {
-    await fetch(SCRIPT_URL, {
+    const res = await fetch(SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload),
     });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'Submission failed');
     document.getElementById('form-wrap').style.display = 'none';
-    document.getElementById('progress-wrap') && (document.querySelector('.progress-wrap').style.display = 'none');
+    document.querySelector('.progress-wrap').style.display = 'none';
     document.getElementById('success-wrap').classList.add('active');
     window.scrollTo(0, 0);
   } catch(e) {
+    err.textContent = e.message && e.message !== 'Failed to fetch'
+      ? e.message
+      : 'Something went wrong. Please try again or email us at info@ramotconsultinggroup.com.';
     err.style.display = 'block';
     btn.disabled = false;
     btn.textContent = 'Submit Onboarding Form →';
