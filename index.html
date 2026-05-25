@@ -206,6 +206,7 @@
       </div>
       <div class="fg"><label>Use of Contractors?</label><select id="b-contractors"><option value="">-- Select --</option><option>Yes, regularly</option><option>Yes, occasionally</option><option>No</option></select></div>
       <div class="fg"><label>Brief Business Description</label><textarea id="b-description" placeholder="What does your business do?"></textarea></div>
+      <div class="fg"><label>Business Website <span style="font-size:10px;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></label><input type="url" id="b-website" placeholder="https://www.yourbusiness.com"></div>
       <div class="nav"><button class="btn-back" onclick="bGo(0)">← Back</button><button class="btn-next" onclick="bGo(2)">Next →</button></div>
     </div>
     <div class="sp" id="b-step2">
@@ -462,6 +463,7 @@ async function submitBusiness() {
     employees: document.getElementById('b-employees').value,
     contractors: document.getElementById('b-contractors').value,
     description: document.getElementById('b-description').value,
+    website: document.getElementById('b-website').value,
     services: Array.from(serviceCbs).filter(c=>c.checked).map(c=>c.value).join(', ') || 'None selected',
     drivingNeed: document.getElementById('b-drivingNeed').value,
     revenue: document.getElementById('b-revenue').value,
