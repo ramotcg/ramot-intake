@@ -77,11 +77,12 @@
   .state h2{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--navy);margin-bottom:14px;}
   .state p{font-size:15px;color:var(--text-muted);font-weight:300;line-height:1.8;}
 
-  @media(max-width:600px){
+  @media(max-width:700px){
     .wrap{padding:24px 16px;}
     .letter-card{padding:32px 24px;}
     .fields-row{grid-template-columns:1fr;}
     .fh{padding:16px 20px;}
+    .sig-grid{grid-template-columns:1fr;}
   }
 </style>
 </head>
@@ -117,46 +118,68 @@
   <!-- Letter -->
   <div class="letter-card" id="letter-content"></div>
 
-  <!-- Signature section -->
-  <div class="sign-card">
-    <div class="sign-card-header">
-      <div class="sign-card-num">✦</div>
-      <div class="sign-card-title">Sign this Agreement</div>
-    </div>
-    <div class="sign-card-body">
-      <p class="sign-intro">By signing below, you confirm that you have read and agree to the terms set forth in this Engagement Letter, including Exhibit A (Terms and Conditions) and Exhibit B (Scope of Work).</p>
+  <!-- Signature section — two parties -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;" class="sig-grid">
 
-      <div class="fields-row">
-        <div class="field">
-          <label>Full Legal Name *</label>
-          <input type="text" id="sign-name" placeholder="Your full name" oninput="updateSigPreview()">
+    <!-- Party 1: Company -->
+    <div class="sign-card">
+      <div class="sign-card-header">
+        <div class="sign-card-num">1</div>
+        <div class="sign-card-title">For the Company</div>
+      </div>
+      <div class="sign-card-body">
+        <p class="sign-intro">By signing below, you confirm that you have read and agree to the terms of this Engagement Letter, including all Exhibits.</p>
+
+        <div class="fields-row">
+          <div class="field">
+            <label>Full Legal Name *</label>
+            <input type="text" id="sign-name" placeholder="Your full name" oninput="updateSigPreview()">
+          </div>
+          <div class="field">
+            <label>Title</label>
+            <input type="text" id="sign-title" placeholder="e.g. CEO, Managing Member">
+          </div>
         </div>
-        <div class="field">
-          <label>Title</label>
-          <input type="text" id="sign-title" placeholder="e.g. CEO, Managing Member">
+        <div class="field" style="max-width:240px;">
+          <label>Date</label>
+          <input type="text" id="sign-date" readonly>
+        </div>
+
+        <!-- Live signature preview -->
+        <div class="sig-preview" id="sig-preview">
+          <div class="sig-name" id="sig-name-display"></div>
+          <div class="sig-meta" id="sig-meta-display"></div>
+        </div>
+
+        <div class="agree-wrap">
+          <input type="checkbox" id="sign-agree">
+          <label for="sign-agree">I have read and agree to the terms of this Engagement Letter, including all Exhibits. I understand this constitutes a legally binding agreement.</label>
+        </div>
+
+        <div class="submit-wrap">
+          <button class="btn-submit" id="sign-btn" onclick="submitSignature()">Sign Engagement Letter →</button>
+          <div class="err" id="sign-err"></div>
         </div>
       </div>
-      <div class="field" style="max-width:240px;">
-        <label>Date</label>
-        <input type="text" id="sign-date" readonly>
-      </div>
+    </div>
 
-      <!-- Live signature preview -->
-      <div class="sig-preview" id="sig-preview">
-        <div class="sig-name" id="sig-name-display"></div>
-        <div class="sig-meta" id="sig-meta-display"></div>
+    <!-- Party 2: RAMOT -->
+    <div class="sign-card" style="opacity:0.75;">
+      <div class="sign-card-header" style="background:var(--navy);">
+        <div class="sign-card-num" style="background:var(--copper);">2</div>
+        <div class="sign-card-title" style="color:#fff;">R.A.M.O.T. Consulting Group</div>
       </div>
-
-      <div class="agree-wrap">
-        <input type="checkbox" id="sign-agree">
-        <label for="sign-agree">I have read and agree to the terms of this Engagement Letter, including all Exhibits. I understand this constitutes a legally binding agreement.</label>
-      </div>
-
-      <div class="submit-wrap">
-        <button class="btn-submit" id="sign-btn" onclick="submitSignature()">Sign Engagement Letter →</button>
-        <div class="err" id="sign-err"></div>
+      <div class="sign-card-body">
+        <p class="sign-intro">This agreement will be countersigned by R.A.M.O.T. Consulting Group upon receipt of your signature. You will receive a fully executed copy by email.</p>
+        <div style="margin-top:16px;padding:16px;background:var(--cream2);border:1px solid var(--border);border-radius:4px;">
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--copper);margin-bottom:10px;">Authorized Signatory</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--navy);border-bottom:2px solid var(--navy);display:inline-block;padding-bottom:2px;margin-bottom:8px;">Avi Mafouda</div>
+          <div style="font-size:13px;color:var(--text-muted);line-height:1.8;">Avi Mafouda, CPA<br/>Founder &amp; Managing Principal<br/>R.A.M.O.T. Consulting Group</div>
+          <div style="margin-top:12px;font-size:11px;color:var(--copper);font-style:italic;">Pending — will countersign upon execution</div>
+        </div>
       </div>
     </div>
+
   </div>
 </div>
 
