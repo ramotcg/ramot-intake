@@ -193,7 +193,7 @@
     </div>
     <div class="sp" id="b-step1">
       <div class="sh">Business Overview</div>
-      <div class="sd">Help us understand your business.</div>
+      <div class="sd">Help us understand your business. <span style="color:#c00;font-size:12px">* Required fields</span></div>
       <div class="gr2"><div class="fg"><label>Legal Business Name</label><input type="text" id="b-legalName"></div><div class="fg"><label>DBA (if applicable)</label><input type="text" id="b-dba"></div></div>
       <div class="gr3">
         <div class="fg"><label>Entity Type</label><select id="b-entityType"><option value="">-- Select --</option><option>LLC</option><option>S-Corp</option><option>C-Corp</option><option>Sole Prop</option><option>Partnership</option></select></div>
@@ -207,8 +207,9 @@
       </div>
       <div class="fg"><label>Use of Contractors?</label><select id="b-contractors"><option value="">-- Select --</option><option>Yes, regularly</option><option>Yes, occasionally</option><option>No</option></select></div>
       <div class="fg"><label>Brief Business Description</label><textarea id="b-description" placeholder="What does your business do?"></textarea></div>
-      <div class="fg"><label>Business Website <span style="font-size:10px;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:400">(optional — helps us personalize your proposal)</span></label><input type="url" id="b-website" placeholder="https://www.yourbusiness.com"></div>
-      <div class="nav"><button class="btn-back" onclick="bGo(0)">← Back</button><button class="btn-next" onclick="bGo(2)">Next →</button></div>
+      <div class="fg"><label>Business Website <span style="color:#c00">*</span> <span style="font-size:10px;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:400">Put "N/A" if you don't have one</span></label><input type="text" id="b-website" placeholder="https://www.yourbusiness.com"></div>
+      <div id="b-step1-err" style="display:none;color:#c00;font-size:13px;margin-top:8px;padding:8px 12px;background:#fff0f0;border-radius:4px;border:1px solid #ffcccc">Please fill in your website (or enter "N/A") before continuing.</div>
+      <div class="nav"><button class="btn-back" onclick="bGo(0)">← Back</button><button class="btn-next" onclick="bValidateStep1()">Next →</button></div>
     </div>
     <div class="sp" id="b-step2">
       <div class="sh">Services Needed</div>
@@ -398,6 +399,14 @@ function bValidateStep0() {
   if (!first || !last || !email || !company || !phone) { err.style.display = 'block'; return; }
   err.style.display = 'none';
   bGo(1);
+}
+
+function bValidateStep1() {
+  const website = document.getElementById('b-website').value.trim();
+  const err = document.getElementById('b-step1-err');
+  if (!website) { err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  bGo(2);
 }
 
 function bValidateStep2() {
