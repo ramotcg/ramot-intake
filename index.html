@@ -304,6 +304,7 @@ const PORTAL_API_URL = 'https://ramot-backend-production.up.railway.app';
 // If portalClientId is in the URL (?portalClientId=...) we route the submission
 // directly to the backend to UPDATE the existing record — no duplicate created.
 const portalClientId = new URLSearchParams(window.location.search).get('portalClientId') || '';
+const autoPath       = new URLSearchParams(window.location.search).get('path') || '';
 
 let currentPath = null;
 let pCur = 0;
@@ -559,6 +560,11 @@ async function submitBusiness() {
       : 'Something went wrong. Please try again or email us at info@ramotconsultinggroup.com.';
     err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Submit →';
   }
+}
+
+// Auto-start correct path if ?path= param is in URL
+if (autoPath === 'personal' || autoPath === 'business') {
+  startPath(autoPath);
 }
 </script>
 </body>
