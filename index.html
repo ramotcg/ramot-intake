@@ -188,7 +188,7 @@
       <div class="sh">Contact Information</div>
       <div class="sd">Tell us who we'll be working with. <span style="color:#c00;font-size:12px">* Required fields</span></div>
       <div class="gr2"><div class="fg"><label>First Name <span style="color:#c00">*</span></label><input type="text" id="b-firstName" placeholder="Jane"></div><div class="fg"><label>Last Name <span style="color:#c00">*</span></label><input type="text" id="b-lastName" placeholder="Smith"></div></div>
-      <div class="gr2"><div class="fg"><label>Title</label><input type="text" id="b-title" placeholder="CEO"></div><div class="fg"><label>Company <span style="color:#c00">*</span></label><input type="text" id="b-company" placeholder="Acme Inc."></div></div>
+      <div class="fg"><label>Title / Role</label><input type="text" id="b-title" placeholder="CEO, Owner, Partner..."></div>
       <div class="gr2"><div class="fg"><label>Email <span style="color:#c00">*</span></label><input type="email" id="b-email" placeholder="jane@acme.com"></div><div class="fg"><label>Phone <span style="color:#c00">*</span></label><input type="tel" id="b-phone" placeholder="(312) 555-0100"></div></div>
       <div class="fg"><label>Street Address</label><input type="text" id="b-address" placeholder="123 Main St"></div>
       <div class="gr2">
@@ -204,7 +204,7 @@
     </div>
     <div class="sp" id="b-step1">
       <div class="sh">Business Overview</div>
-      <div class="sd">Help us understand your business. <span style="color:#c00;font-size:12px">* Required fields</span></div>
+      <div class="sd">Tell us about the business(es) we'll be working with. <span style="color:#c00;font-size:12px">* Required fields</span></div>
       <div class="gr2"><div class="fg"><label>Legal Business Name</label><input type="text" id="b-legalName"></div><div class="fg"><label>DBA (if applicable)</label><input type="text" id="b-dba"></div></div>
       <div class="gr3">
         <div class="fg"><label>Entity Type</label><select id="b-entityType"><option value="">-- Select --</option><option>LLC</option><option>S-Corp</option><option>C-Corp</option><option>Sole Prop</option><option>Partnership</option></select></div>
@@ -219,12 +219,18 @@
       <div class="fg"><label>Use of Contractors?</label><select id="b-contractors"><option value="">-- Select --</option><option>Yes, regularly</option><option>Yes, occasionally</option><option>No</option></select></div>
       <div class="fg"><label>Brief Business Description</label><textarea id="b-description" placeholder="What does your business do?"></textarea></div>
       <div class="fg"><label>Business Website <span style="color:#c00">*</span> <span style="font-size:10px;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:400">Put "N/A" if you don't have one</span></label><input type="text" id="b-website" placeholder="https://www.yourbusiness.com"></div>
+
+      <!-- Additional businesses -->
+      <div id="b-extra-businesses"></div>
+      <button type="button" onclick="bAddExtraBiz()" style="margin-top:20px;width:100%;padding:10px;border:1px dashed rgba(176,125,74,0.4);border-radius:4px;background:transparent;font-family:'Jost',sans-serif;font-size:13px;color:var(--copper);cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;">+ Add Another Business</button>
+
       <div id="b-step1-err" style="display:none;color:#c00;font-size:13px;margin-top:8px;padding:8px 12px;background:#fff0f0;border-radius:4px;border:1px solid #ffcccc">Please fill in your website (or enter "N/A") before continuing.</div>
       <div class="nav"><button class="btn-back" onclick="bGo(0)">← Back</button><button class="btn-next" onclick="bValidateStep1()">Next →</button></div>
     </div>
     <div class="sp" id="b-step2">
       <div class="sh">Services Needed</div>
       <div class="sd">Select all that apply — we'll scope accordingly. <span style="color:#c00;font-size:12px">* Select at least one</span></div>
+      <div class="b-multi-note" style="display:none;background:rgba(176,125,74,0.07);border:1px solid rgba(176,125,74,0.25);border-radius:4px;padding:10px 14px;margin-bottom:20px;font-size:13px;color:var(--navy);line-height:1.6;">Answer for your total operations across all businesses. We'll go entity by entity during our discovery call.</div>
       <div class="sec-label">Accounting & Compliance</div>
       <div class="cbs">
         <label class="cb"><input type="checkbox" value="Bookkeeping"> Bookkeeping</label>
@@ -257,13 +263,14 @@
     <div class="sp" id="b-step3">
       <div class="sh">Financial Complexity</div>
       <div class="sd">This helps us scope the engagement accurately. <span style="color:#c00;font-size:12px">* Required fields</span></div>
+      <div class="b-multi-note" style="display:none;background:rgba(176,125,74,0.07);border:1px solid rgba(176,125,74,0.25);border-radius:4px;padding:10px 14px;margin-bottom:20px;font-size:13px;color:var(--navy);line-height:1.6;">Answer for your total operations across all businesses. We'll go entity by entity during our discovery call.</div>
       <div class="gr2">
         <div class="fg"><label>Annual Revenue (approx.) <span style="color:#c00">*</span></label><select id="b-revenue"><option value="">-- Select --</option><option>Under $500K</option><option>$500K – $1M</option><option>$1M – $3M</option><option>$3M – $10M</option><option>$10M+</option></select></div>
         <div class="fg"><label>Monthly Transaction Volume</label><select id="b-transactions"><option value="">-- Select --</option><option>Under 100</option><option>100 – 500</option><option>500 – 2,000</option><option>2,000+</option></select></div>
       </div>
       <div class="gr2">
         <div class="fg"><label># of Bank/CC Accounts</label><input type="number" id="b-bankAccounts" min="0" placeholder="3"></div>
-        <div class="fg"><label># of Legal Entities</label><input type="number" id="b-entities" min="1" placeholder="1"></div>
+        <div class="fg"><label># of Legal Entities</label><input type="number" id="b-entityCount" min="1" placeholder="1"></div>
       </div>
       <div class="fg"><label>Current Accounting Software <span style="color:#c00">*</span></label><select id="b-software"><option value="">-- Select --</option><option>QuickBooks Online</option><option>QuickBooks Desktop</option><option>Xero</option><option>NetSuite</option><option>Wave</option><option>Spreadsheets only</option><option>None</option><option>Other</option></select></div>
       <div class="fg"><label>How current are your books? <span style="color:#c00">*</span></label><select id="b-booksCurrent"><option value="">-- Select --</option><option>Up to date</option><option>1–3 months behind</option><option>3–6 months behind</option><option>6+ months behind / starting fresh</option></select></div>
@@ -284,6 +291,7 @@
     <div class="sp" id="b-step4">
       <div class="sh">Goals & Logistics</div>
       <div class="sd">Final details to help us prepare your proposal. <span style="color:#c00;font-size:12px">* Required fields</span></div>
+      <div class="b-multi-note" style="display:none;background:rgba(176,125,74,0.07);border:1px solid rgba(176,125,74,0.25);border-radius:4px;padding:10px 14px;margin-bottom:20px;font-size:13px;color:var(--navy);line-height:1.6;">Answer for your total operations across all businesses. We'll go entity by entity during our discovery call.</div>
       <div class="fg"><label>What outcomes are you looking for?</label><textarea id="b-outcomes" placeholder="e.g. Clean books, better cash flow visibility, ready for a capital raise..."></textarea></div>
       <div class="gr2">
         <div class="fg"><label>Target Start Date <span style="color:#c00">*</span></label><input type="date" id="b-startDate"></div>
@@ -306,10 +314,6 @@
   <div class="check-circle">✓</div>
   <h2>Thank you!</h2>
   <p>We've received your intake form and will be in touch within one business day.</p>
-  <div id="add-another-wrap" style="display:none;margin-top:32px;padding-top:28px;border-top:1px solid rgba(176,125,74,0.2);">
-    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">Do you have another related business you'd like us to look at?</p>
-    <button onclick="addAnotherBusiness()" style="padding:10px 28px;border:1.5px solid var(--copper);border-radius:4px;background:transparent;font-family:'Jost',sans-serif;font-size:13px;color:var(--copper);cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;">+ Add Another Business</button>
-  </div>
 </div>
 
 <script>
@@ -406,13 +410,12 @@ function pValidateStep1() {
 }
 
 function bValidateStep0() {
-  const first   = document.getElementById('b-firstName').value.trim();
-  const last    = document.getElementById('b-lastName').value.trim();
-  const email   = document.getElementById('b-email').value.trim();
-  const company = document.getElementById('b-company').value.trim();
-  const phone   = document.getElementById('b-phone').value.trim();
-  const err     = document.getElementById('b-step0-err');
-  if (!first || !last || !email || !company || !phone) { err.style.display = 'block'; return; }
+  const first = document.getElementById('b-firstName').value.trim();
+  const last  = document.getElementById('b-lastName').value.trim();
+  const email = document.getElementById('b-email').value.trim();
+  const phone = document.getElementById('b-phone').value.trim();
+  const err   = document.getElementById('b-step0-err');
+  if (!first || !last || !email || !phone) { err.style.display = 'block'; return; }
   err.style.display = 'none';
   bGo(1);
 }
@@ -456,6 +459,11 @@ function bGo(n) {
   bCur = n;
   document.getElementById('b-step' + bCur).classList.add('active');
   renderSteps(bSteps, bCur, 'b');
+  // Show multi-entity helper notes on steps 2+ when extra businesses exist
+  const hasExtras = document.querySelectorAll('.b-extra-biz').length > 0;
+  document.querySelectorAll('.b-multi-note').forEach(el => {
+    el.style.display = (n >= 2 && hasExtras) ? 'block' : 'none';
+  });
   window.scrollTo(0, 0);
 }
 
@@ -531,7 +539,7 @@ async function submitBusiness() {
     firstName: document.getElementById('b-firstName').value,
     lastName: document.getElementById('b-lastName').value,
     title: document.getElementById('b-title').value,
-    company: document.getElementById('b-company').value,
+    company: bComputeDisplayName(bGetAllEntities()),
     email: document.getElementById('b-email').value,
     phone: document.getElementById('b-phone').value,
     address: document.getElementById('b-address').value,
@@ -555,7 +563,8 @@ async function submitBusiness() {
     revenue: document.getElementById('b-revenue').value,
     transactions: document.getElementById('b-transactions').value,
     bankAccounts: document.getElementById('b-bankAccounts').value,
-    entities: document.getElementById('b-entities').value,
+    entityCount: document.getElementById('b-entityCount').value,
+    entities: JSON.stringify(bGetAllEntities()),
     software: document.getElementById('b-software').value,
     booksCurrent: document.getElementById('b-booksCurrent').value,
     complexityFactors: Array.from(complexityCbs).filter(c=>c.checked).map(c=>c.value).join(', ') || 'None',
@@ -576,7 +585,6 @@ async function submitBusiness() {
     document.getElementById('business-form').style.display = 'none';
     document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('success').classList.add('active');
-    document.getElementById('add-another-wrap').style.display = 'block';
     window.scrollTo(0, 0);
   } catch(e) {
     err.textContent = e.message && e.message !== 'Failed to fetch'
@@ -586,43 +594,99 @@ async function submitBusiness() {
   }
 }
 
-function addAnotherBusiness() {
-  // Grab contact info from what was just submitted
-  const firstName = document.getElementById('b-firstName').value;
-  const lastName  = document.getElementById('b-lastName').value;
-  const email     = document.getElementById('b-email').value;
-  const phone     = document.getElementById('b-phone').value;
-  const title     = document.getElementById('b-title').value;
+// ── Multi-entity helpers ──────────────────────────────────────────────────────
 
-  // Hide success, reset form
-  document.getElementById('success').classList.remove('active');
-  document.getElementById('add-another-wrap').style.display = 'none';
-  document.getElementById('b-submitBtn').disabled = false;
-  document.getElementById('b-submitBtn').textContent = 'Submit →';
+let bExtraCount = 0;
 
-  // Clear all business-step fields
-  document.querySelectorAll('#business-form input:not([type=checkbox]), #business-form select, #business-form textarea').forEach(el => {
-    if (el.type === 'select-one') el.selectedIndex = 0;
-    else el.value = '';
+function bAddExtraBiz() {
+  bExtraCount++;
+  const idx = bExtraCount;
+  const container = document.getElementById('b-extra-businesses');
+  const div = document.createElement('div');
+  div.className = 'b-extra-biz';
+  div.dataset.idx = idx;
+  div.style.cssText = 'margin-top:28px;padding-top:24px;border-top:1px solid rgba(176,125,74,0.25);position:relative;';
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:500;color:var(--copper);letter-spacing:0.08em;text-transform:uppercase;">Business ${idx + 1}</div>
+      <button type="button" onclick="bRemoveExtraBiz(this)" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-muted);padding:2px 6px;font-family:'Jost',sans-serif;" title="Remove">✕ Remove</button>
+    </div>
+    <div class="gr2">
+      <div class="fg"><label>Legal Business Name</label><input type="text" class="bx-legalName" placeholder="Acme LLC"></div>
+      <div class="fg"><label>DBA (if applicable)</label><input type="text" class="bx-dba" placeholder=""></div>
+    </div>
+    <div class="gr3">
+      <div class="fg"><label>Entity Type</label><select class="bx-entityType"><option value="">-- Select --</option><option>LLC</option><option>S-Corp</option><option>C-Corp</option><option>Sole Prop</option><option>Partnership</option></select></div>
+      <div class="fg"><label>State of Formation</label><input type="text" class="bx-state" placeholder="IL" maxlength="2"></div>
+      <div class="fg"><label>Year Founded</label><input type="text" class="bx-yearFounded" placeholder="2018"></div>
+    </div>
+    <div class="gr3">
+      <div class="fg"><label>Industry</label><input type="text" class="bx-industry" placeholder="e.g. Retail, SaaS"></div>
+      <div class="fg"><label># of Owners</label><input type="number" class="bx-owners" min="1" placeholder="1"></div>
+      <div class="fg"><label># of Employees</label><input type="number" class="bx-employees" min="0" placeholder="5"></div>
+    </div>
+    <div class="fg"><label>Use of Contractors?</label><select class="bx-contractors"><option value="">-- Select --</option><option>Yes, regularly</option><option>Yes, occasionally</option><option>No</option></select></div>
+    <div class="fg"><label>Brief Business Description</label><textarea class="bx-description" placeholder="What does this business do?"></textarea></div>
+    <div class="fg"><label>Business Website <span style="font-size:10px;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:400">Put "N/A" if none</span></label><input type="text" class="bx-website" placeholder="https://"></div>
+  `;
+  // Wire up checkbox-style clicks for any future .cb elements (none here but future-proof)
+  div.querySelectorAll('.cb').forEach(cb => {
+    cb.addEventListener('click', function() { this.classList.toggle('checked'); });
   });
-  document.querySelectorAll('#business-form input[type=checkbox]').forEach(el => { el.checked = false; });
-  document.querySelectorAll('#business-form .cb').forEach(el => el.classList.remove('checked'));
+  container.appendChild(div);
+}
 
-  // Re-populate contact fields (locked to same person)
-  document.getElementById('b-firstName').value = firstName;
-  document.getElementById('b-lastName').value  = lastName;
-  document.getElementById('b-email').value     = email;
-  document.getElementById('b-phone').value     = phone;
-  document.getElementById('b-title').value     = title;
+function bRemoveExtraBiz(btn) {
+  btn.closest('.b-extra-biz').remove();
+}
 
-  // Reset to step 0, skip straight to Business step since contact is already filled
-  bCur = 0;
-  document.querySelectorAll('#business-form .sp').forEach(s => s.classList.remove('active'));
-  document.getElementById('b-step0').classList.add('active');
-  document.getElementById('business-form').style.display = 'block';
-  document.getElementById('progress-bar').style.display = 'block';
-  renderSteps(bSteps, 0, 'b');
-  window.scrollTo(0, 0);
+function bGetAllEntities() {
+  const entities = [];
+  // Primary business (Business 1)
+  const primaryName = document.getElementById('b-legalName').value.trim();
+  if (primaryName) {
+    entities.push({
+      name: primaryName,
+      dba: document.getElementById('b-dba').value.trim(),
+      type: document.getElementById('b-entityType').value,
+      state: document.getElementById('b-state').value.trim(),
+      yearFounded: document.getElementById('b-yearFounded').value.trim(),
+      industry: document.getElementById('b-industry').value.trim(),
+      owners: document.getElementById('b-owners').value.trim(),
+      employees: document.getElementById('b-employees').value.trim(),
+      contractors: document.getElementById('b-contractors').value,
+      description: document.getElementById('b-description').value.trim(),
+      website: document.getElementById('b-website').value.trim()
+    });
+  }
+  // Additional businesses
+  document.querySelectorAll('.b-extra-biz').forEach(div => {
+    const name = div.querySelector('.bx-legalName').value.trim();
+    if (name) {
+      entities.push({
+        name,
+        dba: div.querySelector('.bx-dba').value.trim(),
+        type: div.querySelector('.bx-entityType').value,
+        state: div.querySelector('.bx-state').value.trim(),
+        yearFounded: div.querySelector('.bx-yearFounded').value.trim(),
+        industry: div.querySelector('.bx-industry').value.trim(),
+        owners: div.querySelector('.bx-owners').value.trim(),
+        employees: div.querySelector('.bx-employees').value.trim(),
+        contractors: div.querySelector('.bx-contractors').value,
+        description: div.querySelector('.bx-description').value.trim(),
+        website: div.querySelector('.bx-website').value.trim()
+      });
+    }
+  });
+  return entities;
+}
+
+function bComputeDisplayName(entities) {
+  const names = entities.map(e => e.name).filter(Boolean);
+  if (names.length === 0) return '';
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return names[0] + ' / ' + names[1];
+  return names[0] + ' / ' + names[1] + ' et al.';
 }
 
 // Auto-start correct path if ?path= param is in URL
