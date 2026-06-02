@@ -306,6 +306,10 @@
   <div class="check-circle">✓</div>
   <h2>Thank you!</h2>
   <p>We've received your intake form and will be in touch within one business day.</p>
+  <div id="add-another-wrap" style="display:none;margin-top:32px;padding-top:28px;border-top:1px solid rgba(176,125,74,0.2);">
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">Do you have another related business you'd like us to look at?</p>
+    <button onclick="addAnotherBusiness()" style="padding:10px 28px;border:1.5px solid var(--copper);border-radius:4px;background:transparent;font-family:'Jost',sans-serif;font-size:13px;color:var(--copper);cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;">+ Add Another Business</button>
+  </div>
 </div>
 
 <script>
@@ -319,6 +323,7 @@ const autoPath       = new URLSearchParams(window.location.search).get('path') |
 let currentPath = null;
 let pCur = 0;
 let bCur = 0;
+let submittedClientId = portalClientId || ''; // updated after first successful submission
 const pSteps = ['Contact', 'Tax Situation', 'Goals'];
 const bSteps = ['Contact', 'Business', 'Services', 'Financials', 'Goals'];
 
@@ -522,7 +527,7 @@ async function submitBusiness() {
   const data = {
     secret: 'ramot-intake-rcg-2026',
     formType: 'intake',
-    portalClientId: portalClientId || undefined,
+    portalClientId: submittedClientId || undefined,
     firstName: document.getElementById('b-firstName').value,
     lastName: document.getElementById('b-lastName').value,
     title: document.getElementById('b-title').value,
@@ -567,9 +572,11 @@ async function submitBusiness() {
     const res = await fetch(`${PORTAL_API_URL}/intake`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
     const json = await res.json();
     if (!json.success) throw new Error(json.error || 'Submission failed');
+    submittedClientId = json.clientId || submittedClientId;
     document.getElementById('business-form').style.display = 'none';
     document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('success').classList.add('active');
+    document.getElementById('add-another-wrap').style.display = 'block';
     window.scrollTo(0, 0);
   } catch(e) {
     err.textContent = e.message && e.message !== 'Failed to fetch'
@@ -577,6 +584,45 @@ async function submitBusiness() {
       : 'Something went wrong. Please try again or email us at info@ramotconsultinggroup.com.';
     err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Submit →';
   }
+}
+
+function addAnotherBusiness() {
+  // Grab contact info from what was just submitted
+  const firstName = document.getElementById('b-firstName').value;
+  const lastName  = document.getElementById('b-lastName').value;
+  const email     = document.getElementById('b-email').value;
+  const phone     = document.getElementById('b-phone').value;
+  const title     = document.getElementById('b-title').value;
+
+  // Hide success, reset form
+  document.getElementById('success').classList.remove('active');
+  document.getElementById('add-another-wrap').style.display = 'none';
+  document.getElementById('b-submitBtn').disabled = false;
+  document.getElementById('b-submitBtn').textContent = 'Submit →';
+
+  // Clear all business-step fields
+  document.querySelectorAll('#business-form input:not([type=checkbox]), #business-form select, #business-form textarea').forEach(el => {
+    if (el.type === 'select-one') el.selectedIndex = 0;
+    else el.value = '';
+  });
+  document.querySelectorAll('#business-form input[type=checkbox]').forEach(el => { el.checked = false; });
+  document.querySelectorAll('#business-form .cb').forEach(el => el.classList.remove('checked'));
+
+  // Re-populate contact fields (locked to same person)
+  document.getElementById('b-firstName').value = firstName;
+  document.getElementById('b-lastName').value  = lastName;
+  document.getElementById('b-email').value     = email;
+  document.getElementById('b-phone').value     = phone;
+  document.getElementById('b-title').value     = title;
+
+  // Reset to step 0, skip straight to Business step since contact is already filled
+  bCur = 0;
+  document.querySelectorAll('#business-form .sp').forEach(s => s.classList.remove('active'));
+  document.getElementById('b-step0').classList.add('active');
+  document.getElementById('business-form').style.display = 'block';
+  document.getElementById('progress-bar').style.display = 'block';
+  renderSteps(bSteps, 0, 'b');
+  window.scrollTo(0, 0);
 }
 
 // Auto-start correct path if ?path= param is in URL
