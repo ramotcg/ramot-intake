@@ -172,7 +172,7 @@
     <div class="modal-hd">
       <div>
         <div class="modal-hd-title">Your Signature</div>
-        <div class="modal-hd-sub">Applies to all signature fields in this document</div>
+        <div class="modal-hd-sub" id="modal-hd-sub">Sign below</div>
       </div>
       <div class="modal-x" onclick="closeModal()">&#x2715;</div>
     </div>
@@ -233,9 +233,20 @@ if (!elToken) {
     .catch(() => showState('error'));
 }
 
-// ── Inject interactive elements into the rendered letter ──────────────────────
+// Signing state — per-block DocuSign-style
+let _sigName = '', _sigTitle = '';
+let _currentBlockId = null;
+const _signedBlocks = new Set();
+
+// Maps each client block ID to its sign-bar step pill and display label
+const BLOCK_META = {
+  'el-client-sig-block'    : { step: 'step-cover', label: 'Cover Letter' },
+  'el-wo1-client-sig-block': { step: 'step-wo1',   label: 'Work Order #1' },
+};
+
+// Inject interactive elements into the rendered letter
 function injectSignElements() {
-  const signTab = () => `<div class="sign-here-tab" onclick="openModal()">
+  const signTab = (blockId) => `<div class="sign-here-tab" onclick="openModal('${blockId}')">
     <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M1 12L6.5 1L12 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M2.5 9h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
@@ -247,7 +258,7 @@ function injectSignElements() {
 
   ['el-client-sig-block', 'el-wo1-client-sig-block'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.innerHTML = signTab();
+    if (el) el.innerHTML = signTab(id);
   });
 
   ['el-ramot-sig-block', 'el-wo1-ramot-sig-block'].forEach(id => {
@@ -255,40 +266,57 @@ function injectSignElements() {
     if (el) el.innerHTML = pending();
   });
 
-  // If neither WO1 block exists (older EL format), update step indicators
+  // Older EL format with only one sig block
   if (!document.getElementById('el-wo1-client-sig-block')) {
     document.getElementById('step-wo1').style.display = 'none';
     document.getElementById('sign-bar-msg').textContent = '1 signature required';
   }
 }
 
-// ── Modal ─────────────────────────────────────────────────────────────────────
-function openModal() {
+// Modal
+function openModal(blockId) {
+  _currentBlockId = blockId;
+  const meta = BLOCK_META[blockId];
+  document.getElementById('modal-hd-sub').textContent =
+    meta ? 'Signing: ' + meta.label : 'Sign below';
+  // Pre-fill from previous adoption (mirrors DocuSign remembered signature)
+  if (_sigName) {
+    document.getElementById('modal-name').value  = _sigName;
+    document.getElementById('modal-title').value = _sigTitle;
+    updatePreview();
+  } else {
+    document.getElementById('modal-name').value  = '';
+    document.getElementById('modal-title').value = '';
+    document.getElementById('preview-name').textContent = ' ';
+    document.getElementById('preview-meta').textContent = '';
+    document.getElementById('btn-adopt').disabled = true;
+    setTimeout(() => document.getElementById('modal-name').focus(), 80);
+  }
   document.getElementById('sig-modal').classList.add('show');
-  setTimeout(() => document.getElementById('modal-name').focus(), 80);
 }
 
 function closeModal() {
   document.getElementById('sig-modal').classList.remove('show');
+  _currentBlockId = null;
 }
 
 function updatePreview() {
   const name  = document.getElementById('modal-name').value.trim();
   const title = document.getElementById('modal-title').value.trim();
   const today = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('preview-name').textContent = name || ' ';
+  document.getElementById('preview-name').textContent = name || ' ';
   document.getElementById('preview-meta').textContent = name ? (title ? title + ' · ' : '') + today : '';
   document.getElementById('btn-adopt').disabled = !name;
 }
 
-// ── Adopt & fill all client sig blocks ───────────────────────────────────────
-let _signed = false;
-let _sigName = '', _sigTitle = '';
-
+// Adopt & fill only the clicked block
 function adoptSignature() {
   const name  = document.getElementById('modal-name').value.trim();
   const title = document.getElementById('modal-title').value.trim();
-  if (!name) return;
+  if (!name || !_currentBlockId) return;
+
+  _sigName  = name;
+  _sigTitle = title;
 
   const today = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
   const html  =
@@ -297,29 +325,38 @@ function adoptSignature() {
     `<span class="sig-label">Title:</span> <span class="sig-field">${esc(title || '—')}</span><br/>` +
     `<span class="sig-label">Date:</span> <span class="sig-field">${today}</span>`;
 
-  ['el-client-sig-block', 'el-wo1-client-sig-block'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.innerHTML = html;
-  });
+  // Fill only the block that was clicked
+  const el = document.getElementById(_currentBlockId);
+  if (el) el.innerHTML = html;
+  _signedBlocks.add(_currentBlockId);
 
-  // Update sign bar
-  ['step-cover', 'step-wo1'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el && el.style.display !== 'none') el.className = 'sign-step done';
-  });
-  document.getElementById('sign-bar-msg').textContent = '✓ All signatures complete';
-  document.getElementById('btn-finish').disabled = false;
-
-  _signed = true;
-  _sigName  = name;
-  _sigTitle = title;
+  // Mark this block's step pill done
+  const meta = BLOCK_META[_currentBlockId];
+  if (meta) {
+    const stepEl = document.getElementById(meta.step);
+    if (stepEl && stepEl.style.display !== 'none') stepEl.className = 'sign-step done';
+  }
 
   closeModal();
+
+  // Check remaining required blocks
+  const required = Object.keys(BLOCK_META).filter(id => document.getElementById(id));
+  const remaining = required.filter(id => !_signedBlocks.has(id));
+
+  if (remaining.length === 0) {
+    document.getElementById('sign-bar-msg').textContent = '✓ All signatures complete';
+    document.getElementById('btn-finish').disabled = false;
+  } else {
+    document.getElementById('sign-bar-msg').textContent =
+      remaining.length + ' signature' + (remaining.length > 1 ? 's' : '') + ' remaining';
+    // Scroll to next pending Sign Here tab
+    const nextEl = document.getElementById(remaining[0]);
+    if (nextEl) setTimeout(() => nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+  }
 }
 
-// ── Finish ────────────────────────────────────────────────────────────────────
 async function finishSigning() {
-  if (!_signed) return;
+  if (_signedBlocks.size === 0) return;
   const btn = document.getElementById('btn-finish');
   btn.disabled = true;
   btn.textContent = 'Submitting…';
