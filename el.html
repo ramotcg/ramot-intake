@@ -126,15 +126,12 @@
 <!-- Sign bar -->
 <div class="sign-bar" id="sign-bar" style="display:none;">
   <div class="sign-bar-steps">
-    <div class="sign-step pending" id="step-cover">
-      <span class="dot"></span> Cover Letter
-    </div>
     <div class="sign-step pending" id="step-wo1">
       <span class="dot"></span> Work Order #1
     </div>
   </div>
   <div class="sign-bar-right">
-    <span class="sign-bar-msg" id="sign-bar-msg">2 signatures required</span>
+    <span class="sign-bar-msg" id="sign-bar-msg">1 signature required</span>
     <button class="btn-finish" id="btn-finish" disabled onclick="finishSigning()">Finish &rarr;</button>
   </div>
 </div>
@@ -240,8 +237,7 @@ const _signedBlocks = new Set();
 
 // Maps each client block ID to its sign-bar step pill and display label
 const BLOCK_META = {
-  'el-client-sig-block'    : { step: 'step-cover', label: 'Cover Letter' },
-  'el-wo1-client-sig-block': { step: 'step-wo1',   label: 'Work Order #1' },
+  'el-wo1-client-sig-block': { step: 'step-wo1', label: 'Work Order #1' },
 };
 
 // Inject interactive elements into the rendered letter
