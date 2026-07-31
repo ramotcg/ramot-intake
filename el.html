@@ -93,6 +93,20 @@
     .sign-bar{padding:10px 16px;}
     .sign-bar-steps{display:none;}
     .fields-row{grid-template-columns:1fr;}
+    .sign-bar-msg{display:none;}
+  }
+
+  /* Download button */
+  .btn-download{padding:9px 18px;border:1px solid var(--copper);border-radius:4px;background:#fff;color:var(--copper);font-family:'Jost',sans-serif;font-size:13px;font-weight:500;letter-spacing:.04em;cursor:pointer;transition:all .2s;}
+  .btn-download:hover{background:var(--copper);color:#fff;}
+
+  /* Print / Save-as-PDF: output just the letter, cleanly */
+  @media print {
+    .fh, .sign-bar, .overlay, .state, .sign-here-tab { display: none !important; }
+    body { background: #fff; }
+    #main-wrap { display: block !important; }
+    .wrap { max-width: 100%; margin: 0; padding: 0; }
+    .letter-card { border: none; border-radius: 0; box-shadow: none; padding: 0; }
   }
 </style>
 </head>
@@ -132,6 +146,7 @@
   </div>
   <div class="sign-bar-right">
     <span class="sign-bar-msg" id="sign-bar-msg">1 signature required</span>
+    <button class="btn-download" id="btn-download" onclick="window.print()">&#8595; Download PDF</button>
     <button class="btn-finish" id="btn-finish" disabled onclick="finishSigning()">Finish &rarr;</button>
   </div>
 </div>
