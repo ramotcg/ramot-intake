@@ -478,7 +478,7 @@ async function submitPersonal() {
   btn.disabled = true; btn.textContent = 'Submitting...'; err.style.display = 'none';
   const allCbs = document.querySelectorAll('#p-step1 .cbs');
   const data = {
-    secret: 'ramot-intake-rcg-2026',
+    secret: 'dd902f2990843d202d6473f4f09868fa5274a46e93e93ccfcf4ecc051bd04e47',
     formType: 'personal-tax',
     portalClientId: portalClientId || undefined,
     firstName: document.getElementById('p-firstName').value,
@@ -533,7 +533,7 @@ async function submitBusiness() {
   const serviceCbs = document.querySelectorAll('#b-step2 input[type=checkbox]');
   const complexityCbs = document.querySelectorAll('#b-step3 input[type=checkbox]');
   const data = {
-    secret: 'ramot-intake-rcg-2026',
+    secret: 'dd902f2990843d202d6473f4f09868fa5274a46e93e93ccfcf4ecc051bd04e47',
     formType: 'intake',
     portalClientId: submittedClientId || undefined,
     firstName: document.getElementById('b-firstName').value,
