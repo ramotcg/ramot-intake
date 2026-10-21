@@ -136,7 +136,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDH5y_lK85lOAcEKbQWRj9pakRg_lW9a5G_n_325OtXl50rLF-bRPKEpgW6GRZZb-x/exec';
+const SUBMIT_URL = 'https://portal.ramotconsultinggroup.com/forms/onboarding';
 
 let formData = null;
 // answers keyed by qId: string (text/dropdown/yesno) or array (multi/checkbox)
@@ -354,11 +354,9 @@ async function submitOnboarding() {
     });
   });
 
+  // The portal looks the client (and its Drive folder) up from clientId.
   const payload = {
-    secret: '2514476909976a1d448b983430b36667',
-    formType: 'onboarding',
     clientId: formData.clientId || '',
-    driveFolderId: formData.driveFolderId || '',
     client: formData.client,
     contact: formData.contact,
     email: formData.email || '',
@@ -367,13 +365,14 @@ async function submitOnboarding() {
   };
 
   try {
-    const res = await fetch(SCRIPT_URL, {
+    const res = await fetch(SUBMIT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    const json = await res.json();
-    if (!json.success) throw new Error(json.error || 'Submission failed');
+    const json = await res.json().catch(() => ({}));
+    // Show the server's wording only for a form problem (400); anything else gets the generic message below.
+    if (!res.ok || !json.success) throw new Error(res.status === 400 && json.error ? json.error : '');
     document.getElementById('form-wrap').style.display = 'none';
     document.querySelector('.progress-wrap').style.display = 'none';
     document.getElementById('success-wrap').classList.add('active');
