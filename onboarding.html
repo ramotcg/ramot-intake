@@ -138,6 +138,13 @@
 <script>
 const SUBMIT_URL = 'https://portal.ramotconsultinggroup.com/forms/onboarding';
 
+// Every section key the portal can put in a link (ONBOARDING_SECTIONS and
+// ONBOARDING_PERSONAL_SECTIONS in the portal's 07-ui-onboarding.js), in the
+// portal's order. buildForm() and submitOnboarding() both read this, so a section
+// missing here is neither shown nor submitted: add new portal sections here and to titles below.
+const SECTION_ORDER = ['core','accounting','financial_ops','strategic','transaction',
+  'personal_info','personal_dependents','personal_income','personal_deductions','personal_other'];
+
 let formData = null;
 // answers keyed by qId: string (text/dropdown/yesno) or array (multi/checkbox)
 let answers = {};
@@ -177,12 +184,10 @@ function buildForm() {
   const sections = formData.sections;
   let sectionNum = 0;
 
-  const sectionOrder = ['core','accounting','strategic','transaction',
-    'personal_info','personal_dependents','personal_income','personal_deductions','personal_other'];
-
   const titles = {
     core: 'Business & Engagement Setup',
     accounting: 'Accounting & Compliance',
+    financial_ops: 'Financial Operations & System Access',
     strategic: 'Strategic Finance',
     transaction: 'Transaction Advisory',
     personal_info: 'Personal Information',
@@ -192,7 +197,7 @@ function buildForm() {
     personal_other: 'Other',
   };
 
-  sectionOrder.forEach(key => {
+  SECTION_ORDER.forEach(key => {
     if (!sections[key] || sections[key].length === 0) return;
     sectionNum++;
     const questions = sections[key];
@@ -333,10 +338,7 @@ async function submitOnboarding() {
 
   const responses = {};
   const sections = formData.sections;
-  const sectionOrder = ['core','accounting','strategic','transaction',
-    'personal_info','personal_dependents','personal_income','personal_deductions','personal_other'];
-
-  sectionOrder.forEach(key => {
+  SECTION_ORDER.forEach(key => {
     if (!sections[key]) return;
     sections[key].forEach((qRaw, i) => {
       const qObj = typeof qRaw === 'string' ? { q: qRaw, type: 'text' } : qRaw;
